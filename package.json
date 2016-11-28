@@ -4,7 +4,7 @@
     "company": "Coding Instinct AB"
   },
   "name": "grafana",
-  "version": "4.0.0-beta2",
+  "version": "4.0.0-natel-beta2",
   "repository": {
     "type": "git",
     "url": "http://github.com/grafana/grafana.git"
@@ -73,7 +73,7 @@
     "grunt-sass-lint": "^0.2.0",
     "grunt-sync": "^0.4.1",
     "karma-sinon": "^1.0.3",
-    "lodash": "^2.4.1",
+    "lodash": "^4.0.0",
     "mousetrap": "^1.6.0",
     "remarkable": "^1.6.2",
     "sinon": "1.16.1",
@@ -82,6 +82,7 @@
     "tether-drop": "^1.4.2",
     "tslint": "^3.4.0",
     "typescript": "^1.7.5",
-    "virtual-scroll": "^1.1.1"
+    "virtual-scroll": "^1.1.1",
+    "ng-table": "^2.2.0"
   }
 }
