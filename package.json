@@ -3,11 +3,11 @@
     "name": "Torkel Ödegaard",
     "company": "Coding Instinct AB"
   },
-  "name": "grafana",
-  "version": "4.0.0-natel-beta2",
+  "name": "natel-grafana",
+  "version": "4.1.0-pre1",
   "repository": {
     "type": "git",
-    "url": "http://github.com/grafana/grafana.git"
+    "url": "https://github.com/NatelEnergy/grafana.git"
   },
   "devDependencies": {
     "zone.js": "^0.6.6",
