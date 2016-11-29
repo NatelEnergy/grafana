@@ -250,6 +250,7 @@ export default class InfluxDatasource {
   };
 
   getTimeFilter(options) {
+    var elapsed = options.rangeRaw.to.valueOf() - options.rangeRaw.from.valueOf();
     var inMS = elapsed < (5 * 60000);
 
     var from = this.getInfluxTime(options.rangeRaw.from, false, inMS);
