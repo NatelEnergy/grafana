@@ -73,7 +73,7 @@
     "grunt-sass-lint": "^0.2.0",
     "grunt-sync": "^0.4.1",
     "karma-sinon": "^1.0.3",
-    "lodash": "^4.0.0",
+    "lodash": "^2.4.1",
     "mousetrap": "^1.6.0",
     "remarkable": "^1.6.2",
     "sinon": "1.16.1",
