@@ -32,7 +32,7 @@ build_script:
   - cp dist/* .
 
 artifacts:
-  - path: grafana-*windows-*.*
+  - path: natel-grafana-*windows-*.*
     name: binzip
 
 #deploy:
