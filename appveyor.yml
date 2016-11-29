@@ -20,12 +20,12 @@ install:
   - echo %PATH%
   - echo %GOPATH%
   - gem -v
+  - gem install premailer
   - go version
   - go env
   - go run build.go setup
 
 build_script:
-  - build-email.cmd
   - go run build.go build
   - grunt release
   - go run build.go sha1-dist
