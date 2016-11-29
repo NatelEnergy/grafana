@@ -23,14 +23,9 @@ install:
   - go version
   - go env
   - go run build.go setup
-  - cd emails
-  - npm install
-  - gem install premailer
 
 build_script:
-  - cd emails 
-  - grunt
-  - cd ..
+  - build-email.cmd
   - go run build.go build
   - grunt release
   - go run build.go sha1-dist
