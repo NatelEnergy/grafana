@@ -61,6 +61,7 @@ export class TimePickerCtrl {
       this.isUtc = true;
     }
 
+    this.rangeString = rangeUtil.describeTimeRange(timeRaw) + " (TODO ELASPSED)";
     this.absolute = {fromJs: time.from.toDate(), toJs: time.to.toDate()};
     this.tooltip = this.dashboard.formatDate(time.from) + ' <br>to<br>';
     this.tooltip += this.dashboard.formatDate(time.to);
