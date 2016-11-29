@@ -1,3 +1,13 @@
+# 4.1-beta (unreleased)
+
+### Bugfixes
+* **API**: HTTP API for deleting org returning incorrect message for a non-existing org [#6679](https://github.com/grafana/grafana/issues/6679)
+* **Dashboard**: Posting empty dashboard result in corrupted dashboard [#5443](https://github.com/grafana/grafana/issues/5443)
+
+### Enhancements
+* **Postgres**: Add support for Certs for Postgres database [#6655](https://github.com/grafana/grafana/issues/6655)
+* **Victorops**: Add VictorOps Notification Integration [#6411](https://github.com/grafana/grafana/issues/6411)
+
 # 4.0-stable (2016-11-29)
 
 ### Bugfixes
