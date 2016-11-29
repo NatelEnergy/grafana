@@ -61,12 +61,19 @@ export class TimePickerCtrl {
       this.isUtc = true;
     }
 
-    var duration = time.to.diff(time.from);
+    var diff = time.to.diff(time.from);
+    var duration = moment.duration(du)
+    console.log("Delta", diff, duration);
 
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
     this.absolute = {fromJs: time.from.toDate(), toJs: time.to.toDate()};
-    this.tooltip = this.dashboard.formatDate(time.from) + ' <br/>to<br/>';
-    this.tooltip += this.dashboard.formatDate(time.to) + ' <br/> ' + duration.humanize();
+    this.tooltip = this.dashboard.formatDate(time.from) 
+      + ' <br/>to<br/>'
+      + this.dashboard.formatDate(time.to) 
+      + ' <br/> ' 
+      + diff
+      + ' <br/> ' 
+      + duration.humanize();
 
     // do not update time raw when dropdown is open
     // as auto refresh will reset the from/to input fields
