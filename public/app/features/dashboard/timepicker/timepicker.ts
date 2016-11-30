@@ -68,7 +68,41 @@ export class TimePickerCtrl {
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
     this.absolute = {fromJs: time.from.toDate(), toJs: time.to.toDate()};
     this.tooltip = this.dashboard.formatDate(time.from) + ' <br/>to<br/>';
-    this.tooltip += this.dashboard.formatDate(time.to)  + ' <br/> ' + diff + ' <br/> ' + duration.humanize();
+    this.tooltip += this.dashboard.formatDate(time.to) + ' <br/> ';
+
+    if (duration.asWeeks() > 3) {
+      this.tooltip += '<br/>' + duration.humanize();
+    } else {
+      var lines = 0;
+      var w = duration.weeks();
+      var d = duration.days();
+      var h = duration.hours();
+      var m = duration.minutes();
+      var s = duration.seconds();
+      if (w>0) {
+        this.tooltip += '<br/>' + w + ' weeks';
+        lines++;
+      }
+      if (d>0 && lines<2) {
+        this.tooltip += '<br/>' + d + ' days';
+        lines++;
+      }
+      if (h>0 && lines<2) {
+        this.tooltip += '<br/>' + h + ' hours';
+        lines++;
+      }
+      if (m>0 && lines<2) {
+        this.tooltip += '<br/>' + m + ' minutes';
+        lines++;
+      }
+
+      if (lines<1) {
+        this.tooltip += '<br/>' + duration.asSeconds() + ' seconds';
+      } else if (s>0 && lines<2) {
+        this.tooltip += '<br/>' + s + ' seconds';
+      }
+    }
+
 
     // do not update time raw when dropdown is open
     // as auto refresh will reset the from/to input fields
