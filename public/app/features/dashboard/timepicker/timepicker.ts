@@ -62,7 +62,7 @@ export class TimePickerCtrl {
     }
 
     var diff = time.to.diff(time.from);
-    var duration = moment.duration(du)
+    var duration = moment.duration(du);
     console.log("Delta", diff, duration);
 
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
