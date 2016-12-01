@@ -27,7 +27,7 @@ module.exports = function(config) {
     captureTimeout: 20000,
     singleRun: true,
     autoWatchBatchDelay: 1000,
-    browserNoActivityTimeout: 90000,
+    browserNoActivityTimeout: 60000,
 
   });
 
