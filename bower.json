@@ -20,7 +20,6 @@
     "angular-mocks": "1.5.8",
     "angular-sanitize": "1.5.8",
     "angular-native-dragdrop": "1.2.2",
-    "angular-bindonce": "0.3.3",
-    "ng-table": "2.2.0"
+    "angular-bindonce": "0.3.3"
   }
 }
