@@ -63,28 +63,23 @@ export class TimePickerCtrl {
 
     var diff = time.to.diff(time.from);
     var duration = moment.duration(diff);
-    console.log("Delta", diff, duration);
 
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
     this.absolute = {fromJs: time.from.toDate(), toJs: time.to.toDate()};
     this.tooltip = this.dashboard.formatDate(time.from) + ' <br/>to<br/>';
     this.tooltip += this.dashboard.formatDate(time.to) + ' <br/> ';
 
-    if (duration.asWeeks() > 3) {
+    var days = duration.days();
+    if (days > 10) {
       this.tooltip += '<br/>' + duration.humanize();
     } else {
       var lines = 0;
-      var w = duration.weeks();
-      var d = duration.days();
       var h = duration.hours();
       var m = duration.minutes();
       var s = duration.seconds();
-      if (w>0) {
-        this.tooltip += '<br/>' + w + ' weeks';
-        lines++;
-      }
-      if (d>0 && lines<2) {
-        this.tooltip += '<br/>' + d + ' days';
+
+      if (days>0) {
+        this.tooltip += '<br/>' + days + ' days.';
         lines++;
       }
       if (h>0 && lines<2) {
