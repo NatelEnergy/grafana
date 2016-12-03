@@ -69,7 +69,7 @@ export class TimePickerCtrl {
     this.tooltip = this.dashboard.formatDate(time.from) + ' <br/>to<br/>';
     this.tooltip += this.dashboard.formatDate(time.to) + ' <br/> ';
 
-    var days = duration.days();
+    var days = duration.asDays();
     if (days > 10) {
       this.tooltip += '<br/>' + duration.humanize();
     } else {
@@ -78,8 +78,8 @@ export class TimePickerCtrl {
       var m = duration.minutes();
       var s = duration.seconds();
 
-      if (days>0) {
-        this.tooltip += '<br/>' + days + ' days.';
+      if (days>1) {
+        this.tooltip += '<br/>' + duration.days() + ' days.';
         lines++;
       }
       if (h>0 && lines<2) {
