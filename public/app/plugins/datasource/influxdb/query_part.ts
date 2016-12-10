@@ -174,6 +174,25 @@ register({
 });
 
 register({
+  type: 'mode',
+  addStrategy: replaceAggregationAddStrategy,
+  category: categories.Aggregations,
+  params: [],
+  defaultParams: [],
+  renderer: functionRenderer,
+});
+
+
+register({
+  type: 'stddev',
+  addStrategy: replaceAggregationAddStrategy,
+  category: categories.Aggregations,
+  params: [],
+  defaultParams: [],
+  renderer: functionRenderer,
+});
+
+register({
   type: 'sum',
   addStrategy: replaceAggregationAddStrategy,
   category: categories.Aggregations,
@@ -315,6 +334,15 @@ register({
   category: categories.Selectors,
   params: [{name: 'nth', type: 'int'}],
   defaultParams: [95],
+  renderer: functionRenderer,
+});
+
+register({
+  type: 'sample',
+  addStrategy: replaceAggregationAddStrategy,
+  category: categories.Selectors,
+  params: [{name: 'sample', type: 'int'}],
+  defaultParams: [5],
   renderer: functionRenderer,
 });
 
