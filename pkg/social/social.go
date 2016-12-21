@@ -120,7 +120,7 @@ func NewOAuthService() {
 					AuthURL:  setting.GrafanaNetUrl + "/oauth2/authorize",
 					TokenURL: setting.GrafanaNetUrl + "/api/oauth2/token",
 				},
-				RedirectURL: info.RedirectURL,
+				RedirectURL: info.RedirectUrl,
 				Scopes:      info.Scopes,
 			}
 
