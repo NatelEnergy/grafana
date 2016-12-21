@@ -133,7 +133,7 @@ func NewOAuthService() {
 		}
     
     if(len(config.RedirectURL) == 0) {
-      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name, 
+      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name
     }
 	}
 }
