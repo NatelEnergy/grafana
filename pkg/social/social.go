@@ -57,6 +57,7 @@ func NewOAuthService() {
 			TlsClientCert:  sec.Key("tls_client_cert").String(),
 			TlsClientKey:   sec.Key("tls_client_key").String(),
 			TlsClientCa:    sec.Key("tls_client_ca").String(),
+			RedirectUrl:    sec.Key("redirect_url").String(),
 		}
 
 		if !info.Enabled {
@@ -72,9 +73,13 @@ func NewOAuthService() {
 				AuthURL:  info.AuthUrl,
 				TokenURL: info.TokenUrl,
 			},
-			RedirectURL: strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name,
-			Scopes:      info.Scopes,
+			RedirectURL: info.RedirectUrl,
+      Scopes:      info.Scopes,
 		}
+    
+    if(len(config.RedirectURL) == 0) {
+      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name, 
+    }
 
 		// GitHub.
 		if name == "github" {
