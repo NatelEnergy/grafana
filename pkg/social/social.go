@@ -77,10 +77,6 @@ func NewOAuthService() {
       Scopes:      info.Scopes,
 		}
     
-    if(len(config.RedirectURL) == 0) {
-      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name, 
-    }
-
 		// GitHub.
 		if name == "github" {
 			SocialMap["github"] = &SocialGithub{
@@ -124,7 +120,7 @@ func NewOAuthService() {
 					AuthURL:  setting.GrafanaNetUrl + "/oauth2/authorize",
 					TokenURL: setting.GrafanaNetUrl + "/api/oauth2/token",
 				},
-				RedirectURL: strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name,
+				RedirectURL: info.RedirectURL,
 				Scopes:      info.Scopes,
 			}
 
@@ -135,5 +131,9 @@ func NewOAuthService() {
 				allowedOrganizations: sec.Key("allowed_organizations").Strings(" "),
 			}
 		}
+    
+    if(len(config.RedirectURL) == 0) {
+      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name, 
+    }
 	}
 }
