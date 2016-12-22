@@ -3,7 +3,7 @@ title = "Installing on Debian / Ubuntu"
 description = "Install guide for Grafana"
 keywords = ["grafana", "installation", "documentation"]
 type = "docs"
-aliases = ["/installation/installation/"]
+aliases = ["/installation/installation/debian"]
 [menu.docs]
 name = "Installing on Ubuntu / Debian"
 identifier = "debian"
@@ -16,6 +16,7 @@ weight = 1
 Description | Download
 ------------ | -------------
 Stable for Debian-based Linux | [4.0.2 (x86-64 deb)](https://grafanarel.s3.amazonaws.com/builds/grafana_4.0.2-1481203731_amd64.deb)
+Latest beta for Debian-based Linux | [4.1.0-beta1 (x86-64 deb)](https://grafanarel.s3.amazonaws.com/builds/grafana_4.1.0-1482230757beta1_amd64.deb)
 
 ## Install Stable
 
@@ -23,6 +24,14 @@ Stable for Debian-based Linux | [4.0.2 (x86-64 deb)](https://grafanarel.s3.amazo
 $ wget https://grafanarel.s3.amazonaws.com/builds/grafana_4.0.2-1481203731_amd64.deb
 $ sudo apt-get install -y adduser libfontconfig
 $ sudo dpkg -i grafana_4.0.2-1481203731_amd64.deb
+```
+
+## Install Latest Beta
+
+```
+$ wget https://grafanarel.s3.amazonaws.com/builds/grafana_4.1.0-1482230757beta1_amd64.deb
+$ sudo apt-get install -y adduser libfontconfig
+$ sudo dpkg -i grafana_4.1.0-1482230757beta1_amd64.deb
 ```
 
 ## APT Repository

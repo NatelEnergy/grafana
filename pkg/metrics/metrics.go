@@ -47,10 +47,12 @@ var (
 	M_Alerting_Notification_Sent_PagerDuty Counter
 	M_Alerting_Notification_Sent_Victorops Counter
 	M_Alerting_Notification_Sent_OpsGenie  Counter
+	M_Aws_CloudWatch_GetMetricStatistics   Counter
+	M_Aws_CloudWatch_ListMetrics           Counter
 
 	// Timers
 	M_DataSource_ProxyReq_Timer Timer
-	M_Alerting_Execution_Time Timer
+	M_Alerting_Execution_Time   Timer
 
 	// StatTotals
 	M_Alerting_Active_Alerts Gauge
@@ -112,6 +114,9 @@ func initMetricVars(settings *MetricSettings) {
 	M_Alerting_Notification_Sent_PagerDuty = RegCounter("alerting.notifications_sent", "type", "pagerduty")
 	M_Alerting_Notification_Sent_Victorops = RegCounter("alerting.notifications_sent", "type", "victorops")
 	M_Alerting_Notification_Sent_OpsGenie = RegCounter("alerting.notifications_sent", "type", "opsgenie")
+
+	M_Aws_CloudWatch_GetMetricStatistics = RegCounter("aws.cloudwatch.get_metric_statistics")
+	M_Aws_CloudWatch_ListMetrics = RegCounter("aws.cloudwatch.list_metrics")
 
 	// Timers
 	M_DataSource_ProxyReq_Timer = RegTimer("api.dataproxy.request.all")

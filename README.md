@@ -10,7 +10,7 @@
 Grafana is an open source, feature rich metrics dashboard and graph editor for
 Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
 
-![](http://grafana.org/assets/img/start_page_bg.png)
+![](http://grafana.org/assets/img/features/dashboard_ex1.png)
 
 - [Install instructions](http://docs.grafana.org/installation/)
 - [What's New in Grafana 2.0](http://docs.grafana.org/guides/whats-new-in-v2/)
@@ -18,6 +18,7 @@ Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
 - [What's New in Grafana 2.5](http://docs.grafana.org/guides/whats-new-in-v2-5/)
 - [What's New in Grafana 3.0](http://docs.grafana.org/guides/whats-new-in-v3/)
 - [What's New in Grafana 4.0](http://docs.grafana.org/guides/whats-new-in-v4/)
+- [What's New in Grafana 4.1 beta](http://docs.grafana.org/guides/whats-new-in-v4-1/)
 
 ## Features
 ### Graphite Target Editor
