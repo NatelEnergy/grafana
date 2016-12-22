@@ -456,7 +456,7 @@ function($, _) {
   kbn.valueFormats.humidity  = kbn.formatBuilders.fixedUnit('%H');
 
   // Pressure
-  kbn.valueFormats.pressurebar = kbn.formatBuilders.decimalSIPrefix('bar');
+  kbn.valueFormats.pressurebar  = kbn.formatBuilders.decimalSIPrefix('bar');
   kbn.valueFormats.pressurembar = kbn.formatBuilders.decimalSIPrefix('bar', -1);
   kbn.valueFormats.pressurekbar = kbn.formatBuilders.decimalSIPrefix('bar', 1);
   kbn.valueFormats.pressurehpa  = kbn.formatBuilders.fixedUnit('hPa');
@@ -856,10 +856,10 @@ function($, _) {
       {
         text: 'flow',
         submenu: [
-          {text: 'Gallons/min',       value: 'forceNm'  },
-          {text: 'Cubic meters/sec',  value: 'forcekNm' },
-          {text: 'Cubic feet/sec',    value: 'forceN'   },
-          {text: 'Cubic feet/min',    value: 'forcekN'  },
+          {text: 'Gallons/min (gpm)',       value: 'flowgpm'  },
+          {text: 'Cubic meters/sec (cms)',  value: 'flowcms' },
+          {text: 'Cubic feet/sec (cfs)',    value: 'flowcfs'   },
+          {text: 'Cubic feet/min (cfm)',    value: 'flowcfm'  },
         ]
       }
     ];
