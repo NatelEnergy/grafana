@@ -74,7 +74,7 @@ func NewOAuthService() {
 				TokenURL: info.TokenUrl,
 			},
 			RedirectURL: info.RedirectUrl,
-      Scopes:      info.Scopes,
+			Scopes:      info.Scopes,
 		}
     
 		// GitHub.
@@ -132,8 +132,8 @@ func NewOAuthService() {
 			}
 		}
     
-    if(len(config.RedirectURL) == 0) {
-      config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name
-    }
+		if len(config.RedirectURL) == 0 {
+			config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name
+		}
 	}
 }
