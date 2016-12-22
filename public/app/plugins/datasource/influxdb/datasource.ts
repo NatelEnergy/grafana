@@ -279,3 +279,4 @@ export default class InfluxDatasource {
     return date.valueOf() + 'ms';
   }
 }
+
