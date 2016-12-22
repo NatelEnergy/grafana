@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
@@ -62,18 +61,19 @@ func OAuthLogin(ctx *middleware.Context) {
 		return
 	}
 
-	queryState := ctx.Query("state")
 	if ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE) == nil {
-		// TODO, make sure the URL is different?
-		// If we can get the raw request, we could just replace the host?
-		loc := setting.AppUrl + "login/" + name + "?code=" + url.QueryEscape(code) + "&state=" + url.QueryEscape(queryState)
-		ctx.Logger.Info("OAuth REDIRECT: " + setting.AppUrl)
+		if ctx.Query("redirected") == "yes" {
+			ctx.Handle(404, "No OAuth Session Found", errors.New(name))
+			return
+		}
+		loc := setting.AppUrl + "login/" + name + "?" + ctx.Req.URL.RawQuery + "&redirected=yes"
 		ctx.Redirect(loc)
 		return
 	}
 
 	// verify state string
 	savedState := ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE).(string)
+	queryState := ctx.Query("state")
 	if savedState != queryState {
 		ctx.Handle(500, "login.OAuthLogin(state mismatch)", nil)
 		return
