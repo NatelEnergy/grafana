@@ -485,7 +485,7 @@ function($, _) {
   kbn.valueFormats.mlitre = kbn.formatBuilders.decimalSIPrefix('L', -1);
   kbn.valueFormats.m3     = kbn.formatBuilders.decimalSIPrefix('m3');
   kbn.valueFormats.gallons  = kbn.formatBuilders.fixedUnit('gal');
-  
+
   // Flow
   kbn.valueFormats.flowgpm  = kbn.formatBuilders.fixedUnit('gpm');
   kbn.valueFormats.flowcms  = kbn.formatBuilders.fixedUnit('cms');
@@ -830,7 +830,7 @@ function($, _) {
           {text: 'Farenheit (°F)',  value: 'farenheit'   },
           {text: 'Kelvin (K)',      value: 'kelvin'      },
         ]
-      },    
+      },
       {
         text: 'pressure',
         submenu: [
@@ -841,7 +841,7 @@ function($, _) {
           {text: 'Inches of mercury', value: 'pressurehg'  },
           {text: 'PSI',               value: 'pressurepsi' },
         ]
-      },    
+      },
       {
         text: 'force',
         submenu: [
@@ -850,7 +850,7 @@ function($, _) {
           {text: 'Newtons (N)',             value: 'forceN'   },
           {text: 'Kilonewtons (kN)',        value: 'forcekN'  },
         ]
-      },    
+      },
       {
         text: 'flow',
         submenu: [
