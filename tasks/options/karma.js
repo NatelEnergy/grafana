@@ -15,6 +15,7 @@ module.exports = function(config) {
 
     test: {
       configFile: 'karma.conf.js',
+      browsers: ['Chrome']
     },
 
     coveralls: {
