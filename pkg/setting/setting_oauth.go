@@ -4,7 +4,7 @@ type OAuthInfo struct {
 	ClientId, ClientSecret string
 	Scopes                 []string
 	AuthUrl, TokenUrl      string
-  RedirectUrl            string
+	RedirectUrl            string
 	Enabled                bool
 	AllowedDomains         []string
 	HostedDomain           string
