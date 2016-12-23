@@ -182,16 +182,6 @@ register({
   renderer: functionRenderer,
 });
 
-
-register({
-  type: 'stddev',
-  addStrategy: replaceAggregationAddStrategy,
-  category: categories.Aggregations,
-  params: [],
-  defaultParams: [],
-  renderer: functionRenderer,
-});
-
 register({
   type: 'sum',
   addStrategy: replaceAggregationAddStrategy,
@@ -245,6 +235,15 @@ register({
   category: categories.Transformations,
   params: [{ name: "window", type: "number", options: [5, 10, 20, 30, 40]}],
   defaultParams: [10],
+  renderer: functionRenderer,
+});
+
+register({
+  type: 'cumulative_sum',
+  addStrategy: addTransformationStrategy,
+  category: categories.Transformations,
+  params: [],
+  defaultParams: [],
   renderer: functionRenderer,
 });
 
@@ -334,15 +333,6 @@ register({
   category: categories.Selectors,
   params: [{name: 'nth', type: 'int'}],
   defaultParams: [95],
-  renderer: functionRenderer,
-});
-
-register({
-  type: 'sample',
-  addStrategy: replaceAggregationAddStrategy,
-  category: categories.Selectors,
-  params: [{name: 'sample', type: 'int'}],
-  defaultParams: [5],
   renderer: functionRenderer,
 });
 
