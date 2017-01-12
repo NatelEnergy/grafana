@@ -73,7 +73,6 @@ func GetAlerts(c *middleware.Context) Response {
 			Name:           alert.Name,
 			Message:        alert.Message,
 			State:          alert.State,
-			EvalDate:       alert.EvalDate,
 			NewStateDate:   alert.NewStateDate,
 			ExecutionError: alert.ExecutionError,
 		})
@@ -171,6 +170,10 @@ func DelAlert(c *middleware.Context) Response {
 
 	var resp = map[string]interface{}{"alertId": alertId}
 	return Json(200, resp)
+}
+
+func GetAlertNotifiers(c *middleware.Context) Response {
+	return Json(200, alerting.GetNotifiers())
 }
 
 func GetAlertNotifications(c *middleware.Context) Response {

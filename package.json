@@ -4,7 +4,7 @@
     "company": "Coding Instinct AB"
   },
   "name": "natel-grafana",
-  "version": "4.1.0-beta1",
+  "version": "4.2.0-pre1",
   "repository": {
     "type": "git",
     "url": "https://github.com/NatelEnergy/grafana.git"
@@ -48,7 +48,7 @@
     "karma-phantomjs-launcher": "1.0.2",
     "load-grunt-tasks": "3.5.2",
     "mocha": "3.2.0",
-    "phantomjs-prebuilt": "^2.1.13",
+    "phantomjs-prebuilt": "^2.1.14",
     "reflect-metadata": "0.1.8",
     "rxjs": "^5.0.0-rc.5",
     "sass-lint": "^1.10.2",
@@ -78,7 +78,7 @@
     "sinon": "1.17.6",
     "systemjs-builder": "^0.15.34",
     "tether": "^1.4.0",
-    "tether-drop": "git://github.com/torkelo/drop",
+    "tether-drop": "https://github.com/torkelo/drop",
     "tslint": "^4.0.2",
     "typescript": "^2.1.4",
     "virtual-scroll": "^1.1.1"
