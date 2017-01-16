@@ -130,8 +130,7 @@ export class TimePickerCtrl {
       from = range.from.valueOf();
     }
 
-    this.timeSrv.setTime({from: moment.utc(from), to: moment.utc(to) });
-
+    this.timeSrv.setTime({from: moment.utc(from), to: moment.utc(to)});
   }
 
   openDropdown() {
@@ -159,7 +158,7 @@ export class TimePickerCtrl {
       this.timeSrv.setAutoRefresh(this.refresh.value);
     }
 
-    this.timeSrv.setTime(this.timeRaw, true);
+    this.timeSrv.setTime(this.timeRaw);
     this.$rootScope.appEvent('hide-dash-editor');
   }
 
