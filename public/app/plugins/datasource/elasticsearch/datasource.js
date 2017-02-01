@@ -87,7 +87,7 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
       var queryInterpolated = templateSrv.replace(queryString, {}, 'lucene');
       var query = {
         "bool": {
-          "must": [
+          "filter": [
             { "range": range },
             {
               "query_string": {
@@ -168,6 +168,7 @@ function (angular, _, moment, kbn, ElasticQueryBuilder, IndexPattern, ElasticRes
     };
 
     this.testDatasource = function() {
+      timeSrv.setTime({ from: 'now-1m', to: 'now' });
       return this._get('/_stats').then(function() {
         return { status: "success", message: "Data source is working", title: "Success" };
       }, function(err) {
