@@ -863,8 +863,8 @@ function($, _) {
         text: 'flow',
         submenu: [
           {text: 'Gallons/min (gpm)',       value: 'flowgpm'  },
-          {text: 'Cubic meters/sec (cms)',  value: 'flowcms' },
-          {text: 'Cubic feet/sec (cfs)',    value: 'flowcfs'   },
+          {text: 'Cubic meters/sec (cms)',  value: 'flowcms'  },
+          {text: 'Cubic feet/sec (cfs)',    value: 'flowcfs'  },
           {text: 'Cubic feet/min (cfm)',    value: 'flowcfm'  },
         ]
       }
