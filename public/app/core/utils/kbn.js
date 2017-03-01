@@ -478,6 +478,11 @@ function($, _) {
   kbn.valueFormats.lengthkm = kbn.formatBuilders.decimalSIPrefix('m', 1);
   kbn.valueFormats.lengthmi = kbn.formatBuilders.fixedUnit('mi');
 
+  // Area
+  kbn.valueFormats.areaM2 = kbn.formatBuilders.fixedUnit('m²');
+  kbn.valueFormats.areaF2 = kbn.formatBuilders.fixedUnit('ft²');
+  kbn.valueFormats.areaMI2 = kbn.formatBuilders.fixedUnit('mi²');
+
   // Velocity
   kbn.valueFormats.velocityms   = kbn.formatBuilders.fixedUnit('m/s');
   kbn.valueFormats.velocitykmh  = kbn.formatBuilders.fixedUnit('km/h');
@@ -791,6 +796,14 @@ function($, _) {
           {text: 'meter (m)',       value: 'lengthm' },
           {text: 'kilometer (km)',  value: 'lengthkm'},
           {text: 'mile (mi)',       value: 'lengthmi'},
+        ]
+      },
+      {
+        text: 'area',
+        submenu: [
+          {text: 'Square Meters (m²)', value: 'areaM2' },
+          {text: 'Square Feet (ft²)',  value: 'areaF2' },
+          {text: 'Square Miles (mi²)', value: 'areaMI2'}
         ]
       },
       {
