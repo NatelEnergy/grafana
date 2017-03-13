@@ -63,7 +63,7 @@ export default class InfluxDatasource {
         db = this.database;
       }
       if (theDB !== null && theDB !== db) {
-        return this.$q.reject({message: 'All queries must hit the same database (for now)');
+        return this.$q.reject({message: 'All queries must hit the same database (for now)'});
       }
       theDB = db;
 
@@ -181,19 +181,19 @@ export default class InfluxDatasource {
   getTagKeys(options) {
     var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
     var query = queryBuilder.buildExploreQuery('TAG_KEYS');
-    return this.metricFindQuery(query);
+    return this.metricFindQuery(query, options.db);
   }
 
   getTagValues(options) {
     var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
     var query = queryBuilder.buildExploreQuery('TAG_VALUES', options.key);
-    return this.metricFindQuery(query);
+    return this.metricFindQuery(query, options.db);
   }
 
   getDatabases(options) {
     var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
     var query = queryBuilder.buildExploreQuery('DATABASES', options.key);
-    return this.metricFindQuery(query);
+    return this.metricFindQuery(query, options.db);
   }
 
   _seriesQuery(query, db) {
@@ -213,7 +213,10 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    return this.metricFindQuery('SHOW MEASUREMENTS LIMIT 1').then(() => {
+    if( !this.database) {
+      return { status: "failure", message: "Pick a Database", title: "Error" };
+    }
+    return this.metricFindQuery('SHOW MEASUREMENTS LIMIT 1', this.database).then(() => {
       return { status: "success", message: "Data source is working", title: "Success" };
     });
   }
