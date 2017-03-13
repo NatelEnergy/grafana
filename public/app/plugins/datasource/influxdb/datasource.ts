@@ -213,7 +213,7 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    for( var i=0; i<this.urls.length; i++ ) {
+    for ( let i=0; i<this.urls.length; i++ ) {
       if ( this.urls[i].endsWith('/') ) {
         return { status: "failure", message: "URL can not end with a /", title: "Error" };
       } 
