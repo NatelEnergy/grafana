@@ -59,10 +59,10 @@ export default class InfluxDatasource {
       if (target.hide) { return ""; }
 
       var db = target.db;
-      if(db == null || !this.allowDBQuery) {
+      if (db == null || !this.allowDBQuery) {
         db = this.database;
       }
-      if (theDB!=null && theDB !=db) {
+      if (theDB !== null && theDB != db) {
         return this.$q.reject({message: 'All queries must hit the same database (for now)');
       }
       theDB = db;
