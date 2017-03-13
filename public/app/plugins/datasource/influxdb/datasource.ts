@@ -213,8 +213,10 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    if ( this.url.endsWith('/') ) {
-      return { status: "failure", message: "URL can not end with a /", title: "Error" };
+    for( var i=0; i<this.urls.length; i++ ) {
+      if ( this.urls[i].endsWith('/') ) {
+        return { status: "failure", message: "URL can not end with a /", title: "Error" };
+      } 
     }
     if ( !this.database ) {
       return { status: "failure", message: "Pick a Database", title: "Error" };
