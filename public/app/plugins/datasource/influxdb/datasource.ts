@@ -29,7 +29,7 @@ export default class InfluxDatasource {
   constructor(instanceSettings, private $q, private backendSrv, private templateSrv) {
     this.type = 'influxdb';
     this.urls = _.map(instanceSettings.url.split(','), function(url) {
-      return url.trim().replace(/\/$/,"");
+      return url.trim();
     });
 
     this.username = instanceSettings.username;
@@ -213,7 +213,10 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    if( !this.database) {
+    if( this.url.endsWith('/') ) {
+      return { status: "failure", message: "URL can not end with a /", title: "Error" };
+    }
+    if( !this.database ) {
       return { status: "failure", message: "Pick a Database", title: "Error" };
     }
     return this.metricFindQuery('SHOW MEASUREMENTS LIMIT 1', this.database).then(() => {
