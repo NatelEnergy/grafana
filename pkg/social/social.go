@@ -76,7 +76,7 @@ func NewOAuthService() {
 			RedirectURL: info.RedirectUrl,
 			Scopes:      info.Scopes,
 		}
-    
+
 		// GitHub.
 		if name == "github" {
 			SocialMap["github"] = &SocialGithub{
@@ -131,7 +131,7 @@ func NewOAuthService() {
 				allowedOrganizations: sec.Key("allowed_organizations").Strings(" "),
 			}
 		}
-    
+
 		if len(config.RedirectURL) == 0 {
 			config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name
 		}
