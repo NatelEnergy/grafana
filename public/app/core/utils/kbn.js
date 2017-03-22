@@ -438,6 +438,7 @@ function($, _) {
   // Energy
   kbn.valueFormats.watt         = kbn.formatBuilders.decimalSIPrefix('W');
   kbn.valueFormats.kwatt        = kbn.formatBuilders.decimalSIPrefix('W', 1);
+  kbn.valueFormats.kwattpm      = kbn.formatBuilders.decimalSIPrefix('W/Min', 1);
   kbn.valueFormats.voltamp      = kbn.formatBuilders.decimalSIPrefix('VA');
   kbn.valueFormats.kvoltamp     = kbn.formatBuilders.decimalSIPrefix('VA', 1);
   kbn.valueFormats.voltampreact = kbn.formatBuilders.decimalSIPrefix('var');
@@ -477,6 +478,7 @@ function($, _) {
   kbn.valueFormats.lengthmm = kbn.formatBuilders.decimalSIPrefix('m', -1);
   kbn.valueFormats.lengthkm = kbn.formatBuilders.decimalSIPrefix('m', 1);
   kbn.valueFormats.lengthmi = kbn.formatBuilders.fixedUnit('mi');
+  kbn.valueFormats.lengthft = kbn.formatBuilders.fixedUnit('ft');
 
   // Area
   kbn.valueFormats.areaM2 = kbn.formatBuilders.fixedUnit('m²');
