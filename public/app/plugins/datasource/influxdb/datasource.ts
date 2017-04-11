@@ -218,7 +218,7 @@ export default class InfluxDatasource {
         return this.$q.reject( { status: "failure", message: "URL can not end with a /", title: "Error" } );
       }
     }
-    return this.metricFindQuery('SHOW DATABASES').then(res => {
+    return this.metricFindQuery('SHOW DATABASES', null).then(res => {
       let found = _.find(res, {text: this.database});
       if (!found) {
         return { status: "error", message: "Could not find the specified database name.", title: "DB Not found" };
