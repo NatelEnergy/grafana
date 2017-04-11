@@ -10,6 +10,7 @@ machine:
     ORG_PATH: "github.com/grafana"
     REPO_PATH: "${ORG_PATH}/grafana"
     GODIST: "go1.8.linux-amd64.tar.gz"
+    CIRCLE_ARTIFACTS: "./dist"
   post:
     - mkdir -p ~/download
     - mkdir -p ~/docker
@@ -52,6 +53,3 @@ deployment:
       - ./scripts/build/deploy.sh
       - ./scripts/build/sign_packages.sh
       - go run build.go sha-dist
-      - aws s3 sync ./dist s3://$BUCKET_NAME/release
-      - ./scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} release
-      - ./scripts/trigger_docker_build.sh ${TRIGGER_GRAFANA_PACKER_CIRCLECI_TOKEN} ${CIRCLE_TAG}
