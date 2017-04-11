@@ -218,11 +218,17 @@ export default class InfluxDatasource {
         return this.$q.reject( { status: "failure", message: "URL can not end with a /", title: "Error" } );
       }
     }
-    if ( !this.database ) {
-      return this.$q.reject( { status: "failure", message: "Pick a Database", title: "Error" } );
-    }
-    return this.metricFindQuery('SHOW MEASUREMENTS LIMIT 1', this.database).then(() => {
+    return this.metricFindQuery('SHOW DATABASES').then(res => {
+      let found = _.find(res, {text: this.database});
+      if (!found) {
+        return { status: "error", message: "Could not find the specified database name.", title: "DB Not found" };
+      }
       return { status: "success", message: "Data source is working", title: "Success" };
+    }).catch(err => {
+      if (err.data && err.message) {
+        return { status: "error", message: err.data.message, title: "InfluxDB Error" };
+      }
+      return { status: "error", message: err.toString(), title: "InfluxDB Error" };
     });
   }
 
