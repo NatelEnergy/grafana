@@ -14,6 +14,10 @@ module.exports = function(config) {
     },
 
     test: {
+      configFile: 'karma.conf.js'
+    },
+
+    test_chrome: {
       configFile: 'karma.conf.js',
       browsers: ['Chrome']
     }
