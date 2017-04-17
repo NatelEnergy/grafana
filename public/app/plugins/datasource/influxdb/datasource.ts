@@ -17,7 +17,6 @@ export default class InfluxDatasource {
   password: string;
   name: string;
   database: any;
-  allowDBQuery: boolean;
   basicAuth: any;
   withCredentials: any;
   interval: any;
@@ -39,7 +38,6 @@ export default class InfluxDatasource {
     this.basicAuth = instanceSettings.basicAuth;
     this.withCredentials = instanceSettings.withCredentials;
     this.interval = (instanceSettings.jsonData || {}).timeInterval;
-    this.allowDBQuery = (instanceSettings.jsonData || {}).allowDBQuery;
     this.supportAnnotations = true;
     this.supportMetrics = true;
     this.responseParser = new ResponseParser();
@@ -53,19 +51,8 @@ export default class InfluxDatasource {
     var queryModel;
     var i, y;
 
-    var theDB = null;
-
     var allQueries = _.map(targets, target => {
       if (target.hide) { return ""; }
-
-      var db = target.db;
-      if (db == null || !this.allowDBQuery) {
-        db = this.database;
-      }
-      if (theDB !== null && theDB !== db) {
-        return this.$q.reject({message: 'All queries must hit the same database (for now)'});
-      }
-      theDB = db;
 
       queryTargets.push(target);
 
@@ -98,7 +85,7 @@ export default class InfluxDatasource {
     // replace templated variables
     allQueries = this.templateSrv.replace(allQueries, scopedVars);
 
-    return this._seriesQuery(allQueries, theDB).then((data): any => {
+    return this._seriesQuery(allQueries).then((data): any => {
       if (!data || !data.results) {
         return [];
       }
@@ -140,12 +127,11 @@ export default class InfluxDatasource {
       return this.$q.reject({message: 'Query missing in annotation definition'});
     }
 
-
     var timeFilter = this.getTimeFilter({rangeRaw: options.rangeRaw});
     var query = options.annotation.query.replace('$timeFilter', timeFilter);
     query = this.templateSrv.replace(query, null, 'regex');
 
-    return this._seriesQuery(query, options.db).then(data => {
+    return this._seriesQuery(query).then(data => {
       if (!data || !data.results || !data.results[0]) {
         throw { message: 'No results in response from InfluxDB' };
       }
@@ -171,35 +157,29 @@ export default class InfluxDatasource {
     return false;
   };
 
-  metricFindQuery(query, db) {
+  metricFindQuery(query: string, options?: any) {
     var interpolated = this.templateSrv.replace(query, null, 'regex');
 
-    return this._seriesQuery(interpolated, db)
+    return this._seriesQuery(interpolated, options)
       .then(_.curry(this.responseParser.parse)(query));
   }
 
   getTagKeys(options) {
-    var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
+    var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, this.database);
     var query = queryBuilder.buildExploreQuery('TAG_KEYS');
-    return this.metricFindQuery(query, options.db);
+    return this.metricFindQuery(query);
   }
 
   getTagValues(options) {
-    var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
+    var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, this.database);
     var query = queryBuilder.buildExploreQuery('TAG_VALUES', options.key);
-    return this.metricFindQuery(query, options.db);
+    return this.metricFindQuery(query);
   }
 
-  getDatabases(options) {
-    var queryBuilder = new InfluxQueryBuilder({measurement: '', tags: []}, '');
-    var query = queryBuilder.buildExploreQuery('DATABASES', options.key);
-    return this.metricFindQuery(query, options.db);
-  }
-
-  _seriesQuery(query, db) {
+  _seriesQuery(query: string, options?: any) {
     if (!query) { return this.$q.when({results: []}); }
 
-    return this._influxRequest('GET', '/query', {q: query, epoch: 'ms'}, db);
+    return this._influxRequest('GET', '/query', {q: query, epoch: 'ms'}, options);
   }
 
   serializeParams(params) {
@@ -213,12 +193,7 @@ export default class InfluxDatasource {
   }
 
   testDatasource() {
-    for ( let i = 0; i < this.urls.length; i++ ) {
-      if ( this.urls[i].endsWith('/') ) {
-        return this.$q.reject( { status: "failure", message: "URL can not end with a /", title: "Error" } );
-      }
-    }
-    return this.metricFindQuery('SHOW DATABASES', null).then(res => {
+    return this.metricFindQuery('SHOW DATABASES').then(res => {
       let found = _.find(res, {text: this.database});
       if (!found) {
         return { status: "error", message: "Could not find the specified database name.", title: "DB Not found" };
@@ -232,7 +207,7 @@ export default class InfluxDatasource {
     });
   }
 
-  _influxRequest(method, url, data, db) {
+  _influxRequest(method: string, url: string, data: any, options?: any) {
     var currentUrl = this.urls.shift();
     this.urls.push(currentUrl);
 
@@ -241,8 +216,8 @@ export default class InfluxDatasource {
       p: this.password,
     };
 
-    if (db && this.allowDBQuery) {
-      params.db = db;
+    if (options && options.database) {
+      params.db = options.database;
     } else if (this.database) {
       params.db = this.database;
     }
@@ -252,7 +227,7 @@ export default class InfluxDatasource {
       data = null;
     }
 
-    var options: any = {
+    var req: any = {
       method: method,
       url:    currentUrl + url,
       params: params,
@@ -262,15 +237,15 @@ export default class InfluxDatasource {
       paramSerializer: this.serializeParams,
     };
 
-    options.headers = options.headers || {};
+    req.headers = req.headers || {};
     if (this.basicAuth || this.withCredentials) {
-      options.withCredentials = true;
+      req.withCredentials = true;
     }
     if (this.basicAuth) {
-      options.headers.Authorization = this.basicAuth;
+      req.headers.Authorization = this.basicAuth;
     }
 
-    return this.backendSrv.datasourceRequest(options).then(result => {
+    return this.backendSrv.datasourceRequest(req).then(result => {
       return result.data;
     }, function(err) {
       if (err.status !== 0 || err.status >= 300) {
