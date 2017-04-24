@@ -9,7 +9,7 @@ import (
 
 //const rsString = `(?:"([^"]*)")`;
 const rsIdentifier = `([_a-zA-Z0-9]+)`
-const sExpr = `\$` + rsIdentifier + `\((.*)\)`
+const sExpr = `\$` + rsIdentifier + `\(([^\)]*)\)`
 
 type SqlMacroEngine interface {
 	Interpolate(sql string) (string, error)
@@ -73,7 +73,7 @@ func (m *MySqlMacroEngine) EvaluateMacro(name string, args []string) (string, er
 		if len(args) == 0 {
 			return "", fmt.Errorf("missing time column argument for macro %v", name)
 		}
-		return fmt.Sprintf("UNIX_TIMESTAMP(%s) > %d AND UNIX_TIMESTAMP(%s) < %d", args[0], uint64(m.TimeRange.GetFromAsMsEpoch()/1000), args[0], uint64(m.TimeRange.GetToAsMsEpoch()/1000)), nil
+		return fmt.Sprintf("%s > FROM_UNIXTIME(%d) AND %s < FROM_UNIXTIME(%d)", args[0], uint64(m.TimeRange.GetFromAsMsEpoch()/1000), args[0], uint64(m.TimeRange.GetToAsMsEpoch()/1000)), nil
 	default:
 		return "", fmt.Errorf("Unknown macro %v", name)
 	}

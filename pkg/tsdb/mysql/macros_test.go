@@ -19,6 +19,15 @@ func TestMacroEngine(t *testing.T) {
 			So(sql, ShouldEqual, "select UNIX_TIMESTAMP(time_column) as time_sec")
 		})
 
+		Convey("interpolate __time function wrapped in aggregation", func() {
+			engine := &MySqlMacroEngine{}
+
+			sql, err := engine.Interpolate("select min($__time(time_column))")
+			So(err, ShouldBeNil)
+
+			So(sql, ShouldEqual, "select min(UNIX_TIMESTAMP(time_column) as time_sec)")
+		})
+
 		Convey("interpolate __timeFilter function", func() {
 			engine := &MySqlMacroEngine{
 				TimeRange: &tsdb.TimeRange{From: "5m", To: "now"},
@@ -27,7 +36,7 @@ func TestMacroEngine(t *testing.T) {
 			sql, err := engine.Interpolate("WHERE $__timeFilter(time_column)")
 			So(err, ShouldBeNil)
 
-			So(sql, ShouldEqual, "WHERE UNIX_TIMESTAMP(time_column) > 18446744066914186738 AND UNIX_TIMESTAMP(time_column) < 18446744066914187038")
+			So(sql, ShouldEqual, "WHERE time_column > FROM_UNIXTIME(18446744066914186738) AND time_column < FROM_UNIXTIME(18446744066914187038)")
 		})
 
 	})
