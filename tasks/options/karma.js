@@ -14,8 +14,7 @@ module.exports = function(config) {
     },
 
     test: {
-      configFile: 'karma.conf.js',
-      browsers: ['Chrome'] // does not work for linux build :(
+      configFile: 'karma.conf.js'
     },
 
     test_chrome: {
