@@ -226,6 +226,8 @@ export default class InfluxDatasource {
       _.extend(params, data);
       data = null;
     }
+    console.log( "INFLUX REQUEST", params, data, options);
+    
 
     var req: any = {
       method: method,
