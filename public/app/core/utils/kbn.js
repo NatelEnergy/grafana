@@ -511,7 +511,7 @@ function($, _) {
   // Angle
   kbn.valueFormats.degree  = kbn.formatBuilders.fixedUnit('°');
   kbn.valueFormats.radian  = kbn.formatBuilders.fixedUnit('rad');
-  
+
   // Time
   kbn.valueFormats.hertz = kbn.formatBuilders.decimalSIPrefix('Hz');
 
