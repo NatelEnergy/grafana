@@ -508,6 +508,10 @@ function($, _) {
   kbn.valueFormats.flowcfs  = kbn.formatBuilders.fixedUnit('cfs');
   kbn.valueFormats.flowcfm  = kbn.formatBuilders.fixedUnit('cfm');
 
+  // Angle
+  kbn.valueFormats.degree  = kbn.formatBuilders.fixedUnit('°');
+  kbn.valueFormats.radian  = kbn.formatBuilders.fixedUnit('rad');
+  
   // Time
   kbn.valueFormats.hertz = kbn.formatBuilders.decimalSIPrefix('Hz');
 
@@ -888,6 +892,13 @@ function($, _) {
           {text: 'Cubic meters/sec (cms)',  value: 'flowcms'  },
           {text: 'Cubic feet/sec (cfs)',    value: 'flowcfs'  },
           {text: 'Cubic feet/min (cfm)',    value: 'flowcfm'  },
+        ]
+      },
+      {
+        text: 'misc',
+        submenu: [
+          {text: 'Degrees (°)', value: 'degree' },
+          {text: 'Radians',  value: 'radian'    }
         ]
       }
     ];
