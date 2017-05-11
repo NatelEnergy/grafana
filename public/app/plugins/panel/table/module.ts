@@ -8,6 +8,7 @@ import * as FileExport from 'app/core/utils/file_export';
 import {MetricsPanelCtrl} from 'app/plugins/sdk';
 import {transformDataToTable} from './transformers';
 import {tablePanelEditor} from './editor';
+import {columnOptionsTab} from './column_options';
 import {TableRenderer} from './renderer';
 
 class TablePanelCtrl extends MetricsPanelCtrl {
@@ -45,7 +46,6 @@ class TablePanelCtrl extends MetricsPanelCtrl {
     scroll: true,
     fontSize: '100%',
     sort: {col: 0, desc: true},
-    filterNull: false,
   };
 
   /** @ngInject */
@@ -71,6 +71,7 @@ class TablePanelCtrl extends MetricsPanelCtrl {
 
   onInitEditMode() {
     this.addEditorTab('Options', tablePanelEditor, 2);
+    this.addEditorTab('Column Styles', columnOptionsTab, 3);
   }
 
   onInitPanelActions(actions) {

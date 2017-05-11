@@ -94,7 +94,7 @@ export default function link(scope, elem, attrs, ctrl) {
   }
 
   function addXAxis() {
-    xScale = d3.scaleTime()
+    scope.xScale = xScale = d3.scaleTime()
       .domain([timeRange.from, timeRange.to])
       .range([0, chartWidth]);
 
@@ -147,7 +147,7 @@ export default function link(scope, elem, attrs, ctrl) {
       ticks: ticks
     };
 
-    yScale = d3.scaleLinear()
+    scope.yScale = yScale = d3.scaleLinear()
       .domain([y_min, y_max])
       .range([chartHeight, 0]);
 
@@ -206,7 +206,7 @@ export default function link(scope, elem, attrs, ctrl) {
       y_min = 1;
     }
 
-    yScale = d3.scaleLog()
+    scope.yScale = yScale = d3.scaleLog()
       .base(panel.yAxis.logBase)
       .domain([y_min, y_max])
       .range([chartHeight, 0]);
@@ -366,14 +366,12 @@ export default function link(scope, elem, attrs, ctrl) {
         data.buckets = mergeZeroBuckets(data.buckets, _.min(tick_values));
       }
     }
+
     let cardsData = convertToCards(data.buckets);
+    let maxValue = d3.max(cardsData, card => card.count);
 
-    let max_value = d3.max(cardsData, card => {
-      return card.values.length;
-    });
-
-    colorScale = getColorScale(max_value);
-    setOpacityScale(max_value);
+    colorScale = getColorScale(maxValue);
+    setOpacityScale(maxValue);
     setCardSize();
 
     let cards = heatmap.selectAll(".heatmap-card").data(cardsData);
@@ -431,14 +429,14 @@ export default function link(scope, elem, attrs, ctrl) {
     return d3.scaleSequential(colorInterpolator).domain([start, end]);
   }
 
-  function setOpacityScale(max_value) {
+  function setOpacityScale(maxValue) {
     if (panel.color.colorScale === 'linear') {
       opacityScale = d3.scaleLinear()
-      .domain([0, max_value])
+      .domain([0, maxValue])
       .range([0, 1]);
     } else if (panel.color.colorScale === 'sqrt') {
       opacityScale = d3.scalePow().exponent(panel.color.exponent)
-      .domain([0, max_value])
+      .domain([0, maxValue])
       .range([0, 1]);
     }
   }
@@ -529,13 +527,13 @@ export default function link(scope, elem, attrs, ctrl) {
     if (panel.color.mode === 'opacity') {
       return panel.color.cardColor;
     } else {
-      return colorScale(d.values.length);
+      return colorScale(d.count);
     }
   }
 
   function getCardOpacity(d) {
     if (panel.color.mode === 'opacity') {
-      return opacityScale(d.values.length);
+      return opacityScale(d.count);
     } else {
       return 1;
     }
@@ -548,16 +546,10 @@ export default function link(scope, elem, attrs, ctrl) {
   // Shared crosshair and tooltip
   appEvents.on('graph-hover', event => {
     drawSharedCrosshair(event.pos);
-
-    // Show shared tooltip
-    if (ctrl.dashboard.graphTooltip === 2) {
-      tooltip.show(event.pos, data);
-    }
   }, scope);
 
   appEvents.on('graph-hover-clear', () => {
     clearCrosshair();
-    tooltip.destroy();
   }, scope);
 
   function onMouseDown(event) {
@@ -770,8 +762,6 @@ export default function link(scope, elem, attrs, ctrl) {
     }
 
     addHeatmap();
-    scope.yScale = yScale;
-    scope.xScale = xScale;
     scope.yAxisWidth = yAxisWidth;
     scope.xAxisHeight = xAxisHeight;
     scope.chartHeight = chartHeight;
@@ -830,9 +820,4 @@ function getPrecision(num) {
   } else {
     return str.length - dot_index - 1;
   }
-}
-
-function getTicksPrecision(values) {
-  let precisions = _.map(values, getPrecision);
-  return _.max(precisions);
 }
