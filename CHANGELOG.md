@@ -1,5 +1,11 @@
 # 4.4.0 (unreleased)
 
+## New Features
+**Dashboard History**: View dashboard version history, compare any two versions (summary & json diffs), restore to old version. This big feature
+was contributed by **Walmart Labs**. Big thanks to them for this massive contribution!
+Initial feature request: [#4638](https://github.com/grafana/grafana/issues/4638)
+Pull Request: [#8472](https://github.com/grafana/grafana/pull/8472)
+
 ## Enhancements
 * **Elasticsearch**: Added filter aggregation label [#8420](https://github.com/grafana/grafana/pull/8420), thx [@tianzk](github.com/tianzk)
 * **Sensu**: Added option for source and handler [#8405](https://github.com/grafana/grafana/pull/8405), thx [@joemiller](github.com/joemiller)
@@ -55,7 +61,7 @@
 * **Heatmap**: Heatmap Panel [#7934](https://github.com/grafana/grafana/pull/7934)
 * **Elasticsearch**: histogram aggregation [#3164](https://github.com/grafana/grafana/issues/3164)
 
-## Minor Enchancements
+## Minor Enhancements
 
 * **InfluxDB**: Small fix for the "glow" when focus the field for LIMIT and SLIMIT [#7799](https://github.com/grafana/grafana/pull/7799) thx [@thuck](https://github.com/thuck)
 * **Prometheus**: Make Prometheus query field a textarea [#7663](https://github.com/grafana/grafana/issues/7663), thx [@hagen1778](https://github.com/hagen1778)
