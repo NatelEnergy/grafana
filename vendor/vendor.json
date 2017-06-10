@@ -371,6 +371,12 @@
 			"revisionTime": "2016-12-22T07:05:54Z"
 		},
 		{
+			"checksumSHA1": "Rp4MJ0xFAy00EC0zlnwCpTEdYY8=",
+			"path": "github.com/go-macaron/gzip",
+			"revision": "cad1c6580a07c56f5f6bc52d66002a05985c5854",
+			"revisionTime": "2016-02-22T04:36:47Z"
+		},
+		{
 			"checksumSHA1": "y0olVbiMQ6/UOa/eh52XYnies90=",
 			"path": "github.com/go-macaron/inject",
 			"revision": "d8a0b8677191f4380287cfebd08e462217bac7ad",
@@ -511,6 +517,18 @@
 			"path": "golang.org/x/net/html/atom",
 			"revision": "4971afdc2f162e82d185353533d3cf16188a9f4e",
 			"revisionTime": "2016-11-15T21:05:04Z"
+		},
+		{
+			"checksumSHA1": "SjCoL7KD7qBmgSuqGTCAuUhigDk=",
+			"path": "golang.org/x/oauth2",
+			"revision": "f047394b6d14284165300fd82dad67edb3a4d7f6",
+			"revisionTime": "2017-05-17T17:14:19Z"
+		},
+		{
+			"checksumSHA1": "Umx4Fmn5FyXJyUVzKWhnQdvFNkc=",
+			"path": "golang.org/x/oauth2/internal",
+			"revision": "f047394b6d14284165300fd82dad67edb3a4d7f6",
+			"revisionTime": "2017-05-17T17:14:19Z"
 		},
 		{
 			"checksumSHA1": "S0DP7Pn7sZUmXc55IzZnNvERu6s=",
