@@ -208,10 +208,12 @@ export default class InfluxDatasource {
     var currentUrl = this.urls.shift();
     this.urls.push(currentUrl);
 
-    var params: any = {
-      u: this.username,
-      p: this.password,
-    };
+    var params: any = {};
+
+    if (this.username) {
+      params.username =  this.username;
+      params.password =  this.password;
+    }
 
     if (options && options.database) {
       params.db = options.database;
