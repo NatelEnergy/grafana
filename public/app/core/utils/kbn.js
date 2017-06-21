@@ -495,6 +495,11 @@ function($, _) {
   kbn.valueFormats.velocitymph  = kbn.formatBuilders.fixedUnit('mph');
   kbn.valueFormats.velocityknot = kbn.formatBuilders.fixedUnit('kn');
 
+  // Acceleration
+  kbn.valueFormats.accMS2 = kbn.formatBuilders.fixedUnit('m/sec²');
+  kbn.valueFormats.accFS2 = kbn.formatBuilders.fixedUnit('f/sec²');
+  kbn.valueFormats.accG   = kbn.formatBuilders.fixedUnit('g');
+
   // Volume
   kbn.valueFormats.litre  = kbn.formatBuilders.decimalSIPrefix('L');
   kbn.valueFormats.mlitre = kbn.formatBuilders.decimalSIPrefix('L', -1);
@@ -511,6 +516,7 @@ function($, _) {
   // Angle
   kbn.valueFormats.degree  = kbn.formatBuilders.fixedUnit('°');
   kbn.valueFormats.radian  = kbn.formatBuilders.fixedUnit('rad');
+  kbn.valueFormats.grad    = kbn.formatBuilders.fixedUnit('grad');
 
   // Time
   kbn.valueFormats.hertz = kbn.formatBuilders.decimalSIPrefix('Hz');
@@ -895,10 +901,19 @@ function($, _) {
         ]
       },
       {
-        text: 'misc',
+        text: 'angle',
         submenu: [
           {text: 'Degrees (°)', value: 'degree' },
-          {text: 'Radians',  value: 'radian'    }
+          {text: 'Radians',  value: 'radian'    },
+          {text: 'Gradian',  value: 'grad'      }
+        ]
+      },
+      {
+        text: 'acceleration',
+        submenu: [
+          {text: 'Meters/sec²', value: 'accMS2' },
+          {text: 'Feet/sec²',  value: 'accFS2'  },
+          {text: 'G unit',  value: 'accG'       }
         ]
       }
     ];
