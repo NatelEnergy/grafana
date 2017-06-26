@@ -456,6 +456,7 @@ function($, _) {
   kbn.valueFormats.volt         = kbn.formatBuilders.decimalSIPrefix('V');
   kbn.valueFormats.kvolt        = kbn.formatBuilders.decimalSIPrefix('V', 1);
   kbn.valueFormats.dBm          = kbn.formatBuilders.decimalSIPrefix('dBm');
+  kbn.valueFormats.ohm          = kbn.formatBuilders.decimalSIPrefix('Ω');
 
   // Temperature
   kbn.valueFormats.celsius   = kbn.formatBuilders.fixedUnit('°C');
@@ -861,6 +862,7 @@ function($, _) {
           {text: 'Volt (V)',                   value: 'volt'        },
           {text: 'Kilovolt (kV)',              value: 'kvolt'       },
           {text: 'Decibel-milliwatt (dBm)',    value: 'dBm'         },
+          {text: 'Ohm (Ω)',                    value: 'ohm'         }
         ]
       },
       {
