@@ -18,11 +18,11 @@ export class TimePickerCtrl {
   panel: any;
   absolute: any;
   timeRaw: any;
+  editTimeRaw: any;
   tooltip: string;
   rangeString: string;
   timeOptions: any;
   refresh: any;
-  isOpen: boolean;
   isUtc: boolean;
   firstDayOfWeek: number;
 
@@ -32,18 +32,18 @@ export class TimePickerCtrl {
 
     $rootScope.onAppEvent('shift-time-forward', () => this.move(1), $scope);
     $rootScope.onAppEvent('shift-time-backward', () => this.move(-1), $scope);
-    $rootScope.onAppEvent('refresh', () => this.init(), $scope);
-    $rootScope.onAppEvent('dash-editor-hidden', () => this.isOpen = false, $scope);
-    this.init();
-  }
+    $rootScope.onAppEvent('refresh', this.onRefresh.bind(this), $scope);
 
-  init() {
+    // init options
     this.panel = this.dashboard.timepicker;
-
     _.defaults(this.panel, TimePickerCtrl.defaults);
-
     this.firstDayOfWeek = moment.localeData().firstDayOfWeek();
 
+    // init time stuff
+    this.onRefresh();
+  }
+
+  onRefresh() {
     var time = angular.copy(this.timeSrv.timeRange());
     var timeRaw = angular.copy(time.raw);
 
@@ -66,8 +66,11 @@ export class TimePickerCtrl {
 
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
     this.absolute = {fromJs: time.from.toDate(), toJs: time.to.toDate()};
-    this.tooltip = this.dashboard.formatDate(time.from) + ' <br/>to<br/>';
-    this.tooltip += this.dashboard.formatDate(time.to) + ' <br/> ';
+
+
+    this.tooltip = this.dashboard.formatDate(time.from) + ' <br>to<br>';
+    this.tooltip += this.dashboard.formatDate(time.to);
+    this.timeRaw = timeRaw;
 
     var days = duration.asDays();
     if (days > 10) {
@@ -96,13 +99,6 @@ export class TimePickerCtrl {
       } else if (s>0 && lines<2) {
         this.tooltip += '<br/>' + s + ' seconds';
       }
-    }
-
-
-    // do not update time raw when dropdown is open
-    // as auto refresh will reset the from/to input fields
-    if (!this.isOpen) {
-      this.timeRaw = timeRaw;
     }
   }
 
@@ -134,8 +130,8 @@ export class TimePickerCtrl {
   }
 
   openDropdown() {
-    this.init();
-    this.isOpen = true;
+    this.onRefresh();
+    this.editTimeRaw = this.timeRaw;
     this.timeOptions = rangeUtil.getRelativeTimesList(this.panel, this.rangeString);
     this.refresh = {
       value: this.dashboard.refresh,
@@ -158,16 +154,16 @@ export class TimePickerCtrl {
       this.timeSrv.setAutoRefresh(this.refresh.value);
     }
 
-    this.timeSrv.setTime(this.timeRaw);
+    this.timeSrv.setTime(this.editTimeRaw);
     this.$rootScope.appEvent('hide-dash-editor');
   }
 
   absoluteFromChanged() {
-    this.timeRaw.from = this.getAbsoluteMomentForTimezone(this.absolute.fromJs);
+    this.editTimeRaw.from = this.getAbsoluteMomentForTimezone(this.absolute.fromJs);
   }
 
   absoluteToChanged() {
-    this.timeRaw.to = this.getAbsoluteMomentForTimezone(this.absolute.toJs);
+    this.editTimeRaw.to = this.getAbsoluteMomentForTimezone(this.absolute.toJs);
   }
 
   getAbsoluteMomentForTimezone(jsDate) {
