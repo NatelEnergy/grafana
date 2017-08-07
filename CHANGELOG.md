@@ -2,13 +2,25 @@
 
 ## New Features
 
-* **Table panel**: Render cell values as links that can use url that uses variables from current table row. [#3754](https://github.com/grafana/grafana/issues/3754) 
+* **Table panel**: Render cell values as links that can use url that uses variables from current table row. [#3754](https://github.com/grafana/grafana/issues/3754)
 
 ## Enhancements
 
 * **GitHub OAuth**: Support for GitHub organizations with 100+ teams. [#8846](https://github.com/grafana/grafana/issues/8846), thx [@skwashd](https://github.com/skwashd)
+* **Graphite**: Calls to Graphite api /metrics/find now include panel or dashboad time range (from & until) in most cases, [#8055](https://github.com/grafana/grafana/issues/8055)
 
-# 4.4.2 (unreleased) 
+## Changes
+
+* **InfluxDB**: Change time range filter for absolute time ranges to be inclusive instead of exclusive [#8319](https://github.com/grafana/grafana/issues/8319), thx [@Oxydros](https://github.com/Oxydros)
+
+# 4.4.3 (2017-08-07)
+
+## Bug Fixes
+
+* **Search**: Fix for issue that casued search view to hide  when you clicked starred or tags filters, fixes [#8981](https://github.com/grafana/grafana/issues/8981)
+* **Modals**: ESC key now closes modal again, fixes [#8981](https://github.com/grafana/grafana/issues/8988), thx [@j-white](https://github.com/j-white)
+
+# 4.4.2 (2017-08-01)
 
 ## Bug Fixes
 
@@ -17,6 +29,8 @@
 * **InfluxDB**: Wrong username/password parameter name when using direct access, fixes [#8789](https://github.com/grafana/grafana/issues/8789)
 * **Forms(TextArea)**: Bug fix for no scroll in text areas [#8797](https://github.com/grafana/grafana/issues/8797)
 * **Png Render API**: Bug fix for timeout url parameter. It now works as it should. Default value was also increased from 30 to 60 seconds [#8710](https://github.com/grafana/grafana/issues/8710)
+* **Search**: Fix for not being able to close search by clicking on right side of search result container, [8848](https://github.com/grafana/grafana/issues/8848)
+* **Cloudwatch**: Fix for using variables in templating metrics() query, [8965](https://github.com/grafana/grafana/issues/8965)
 
 ## Changes
 
