@@ -1,10 +1,15 @@
 {
   "author": {
     "name": "Torkel Ödegaard",
-    "company": "Coding Instinct AB"
+    "company": "Grafana Labs"
   },
+<<<<<<< HEAD
   "name": "natel-grafana",
   "version": "5.0.0-pre1",
+=======
+  "name": "grafana",
+  "version": "4.5.0-beta1",
+>>>>>>> grafana/master
   "repository": {
     "type": "git",
     "url": "https://github.com/NatelEnergy/grafana.git"
