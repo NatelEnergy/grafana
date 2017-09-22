@@ -85,7 +85,7 @@ export default class InfluxDatasource {
     // replace templated variables
     allQueries = this.templateSrv.replace(allQueries, scopedVars);
 
-    return this._seriesQuery(allQueries, targets[0]).then((data): any => {
+    return this._seriesQuery(allQueries, options).then((data): any => {
       if (!data || !data.results) {
         return [];
       }
@@ -196,11 +196,11 @@ export default class InfluxDatasource {
     return this.metricFindQuery('SHOW DATABASES').then(res => {
       let found = _.find(res, {text: this.database});
       if (!found) {
-        return { status: "error", message: "Could not find the specified database name.", title: "DB Not found" };
+        return { status: "error", message: "Could not find the specified database name." };
       }
-      return { status: "success", message: "Data source is working", title: "Success" };
+      return { status: "success", message: "Data source is working" };
     }).catch(err => {
-      return { status: "error", message: err.message, title: "Test Failed" };
+      return { status: "error", message: err.message };
     });
   }
 
@@ -263,10 +263,10 @@ export default class InfluxDatasource {
     var fromIsAbsolute = from[from.length-1] === 'ms';
 
     if (until === 'now()' && !fromIsAbsolute) {
-      return 'time > ' + from;
+      return 'time >= ' + from;
     }
 
-    return 'time > ' + from + ' and time < ' + until;
+    return 'time >= ' + from + ' and time <= ' + until;
   }
 
   getInfluxTime(date, roundUp) {
