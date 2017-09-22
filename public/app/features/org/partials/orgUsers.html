@@ -22,7 +22,7 @@
 						Users ({{ctrl.users.length}})
 					</a>
 				</li>
-				<li class="gf-tabs-item" ng-show="ctrl.showInviteUI">
+				<li class="gf-tabs-item" ng-show="ctrl.pendingInvites.length">
 					<a class="gf-tabs-link" ng-click="ctrl.editor.index = 1" ng-class="{active: ctrl.editor.index === 1}">
 						Pending Invitations ({{ctrl.pendingInvites.length}})
 					</a>
@@ -41,6 +41,10 @@
         <tr>
           <th>Login</th>
           <th>Email</th>
+					<th>
+						Seen
+						<tip>Time since user was seen using Grafana</tip>
+					</th>
           <th>Role</th>
           <th style="width: 34px;"></th>
         </tr>
@@ -48,6 +52,7 @@
       <tr ng-repeat="user in ctrl.users">
         <td>{{user.login}}</td>
         <td><span class="ellipsis">{{user.email}}</span></td>
+				<td>{{user.lastSeenAtAge}}</td>
         <td>
           <select type="text" ng-model="user.role" class="input-medium" ng-options="f for f in ['Viewer', 'Editor', 'Read Only Editor', 'Admin']" ng-change="ctrl.updateOrgUser(user)">
           </select>
@@ -61,7 +66,7 @@
     </table>
   </div>
 
-  <div ng-if="ctrl.editor.index === 1 && ctrl.showInviteUI">
+  <div ng-if="ctrl.editor.index === 1">
     <table class="filter-table form-inline">
       <thead>
         <tr>
@@ -75,7 +80,7 @@
           <td>{{invite.email}}</td>
           <td>{{invite.name}}</td>
           <td class="text-right">
-            <button class="btn btn-inverse btn-mini " data-clipboard-text="{{invite.url}}" clipboard-button ng-click="ctrl.copyInviteToClipboard($event)">
+            <button class="btn btn-inverse btn-mini" clipboard-button="ctrl.getInviteUrl(invite)" ng-click="ctrl.copyInviteToClipboard($event)">
               <i class="fa fa-clipboard"></i> Copy Invite
             </button>
             &nbsp;

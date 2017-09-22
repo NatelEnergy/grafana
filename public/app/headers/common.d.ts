@@ -1,4 +1,3 @@
-/// <reference path="./es6-shim/es6-shim.d.ts" />
 
 declare var System: any;
 
@@ -53,11 +52,6 @@ declare module 'eventemitter3' {
   export default config;
 }
 
-declare module 'virtual-scroll' {
-  var config: any;
-  export default config;
-}
-
 declare module 'mousetrap' {
   var config: any;
   export default config;
@@ -71,4 +65,9 @@ declare module 'remarkable' {
 declare module 'd3' {
   var d3: any;
   export default d3;
+}
+
+declare module 'ace' {
+  var ace: any;
+  export default ace;
 }

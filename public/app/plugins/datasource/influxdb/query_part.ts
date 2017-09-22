@@ -6,8 +6,6 @@ import {
   QueryPart,
   functionRenderer,
   suffixRenderer,
-  identityRenderer,
-  quotedIdentityRenderer,
 } from 'app/core/components/query_part/query_part';
 
 var index = [];
@@ -223,6 +221,15 @@ register({
 
 register({
   type: 'difference',
+  addStrategy: addTransformationStrategy,
+  category: categories.Transformations,
+  params: [],
+  defaultParams: [],
+  renderer: functionRenderer,
+});
+
+register({
+  type: 'non_negative_difference',
   addStrategy: addTransformationStrategy,
   category: categories.Transformations,
   params: [],

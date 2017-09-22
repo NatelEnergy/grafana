@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {describe, beforeEach, it, sinon, expect, angularMocks} from 'test/lib/common';
+import {describe, beforeEach, it, expect, angularMocks} from 'test/lib/common';
 import moment from 'moment';
 import angular from 'angular';
 import helpers from 'test/specs/helpers';
@@ -7,7 +7,6 @@ import {ElasticDatasource} from "../datasource";
 
 describe('ElasticDatasource', function() {
   var ctx = new helpers.ServiceTestContext();
-  var instanceSettings: any = {jsonData: {}};
 
   beforeEach(angularMocks.module('grafana.core'));
   beforeEach(angularMocks.module('grafana.services'));
@@ -113,7 +112,7 @@ describe('ElasticDatasource', function() {
   });
 
   describe('When getting fields', function() {
-    var requestOptions, parts, header;
+    var requestOptions;
 
     beforeEach(function() {
       createDatasource({url: 'http://es.com', index: 'metricbeat'});
@@ -129,7 +128,10 @@ describe('ElasticDatasource', function() {
                   '@timestamp': {type: 'date'},
                   beat: {
                     properties: {
-                      name: {type: 'string'},
+                      name: {
+                        fields: {raw: {type: 'keyword'}},
+                        type: 'string'
+                      },
                       hostname: {type: 'string'},
                     }
                   },
@@ -169,6 +171,7 @@ describe('ElasticDatasource', function() {
         var fields = _.map(fieldObjects, 'text');
         expect(fields).to.eql([
           '@timestamp',
+          'beat.name.raw',
           'beat.name',
           'beat.hostname',
           'system.cpu.system',

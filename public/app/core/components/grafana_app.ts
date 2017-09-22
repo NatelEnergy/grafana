@@ -1,9 +1,7 @@
 ///<reference path="../../headers/common.d.ts" />
 
 import config from 'app/core/config';
-import store from 'app/core/store';
 import _ from 'lodash';
-import angular from 'angular';
 import $ from 'jquery';
 
 import coreModule from 'app/core/core_module';
@@ -192,7 +190,7 @@ export function grafanaAppDirective(playlistSrv, contextSrv) {
 
         // hide search
         if (body.find('.search-container').length > 0) {
-          if (target.parents('.search-container').length === 0) {
+          if (target.parents('.search-results-container, .search-field-wrapper').length === 0) {
             scope.$apply(function() {
               scope.appEvent('hide-dash-search');
             });

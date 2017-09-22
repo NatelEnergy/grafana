@@ -1,7 +1,6 @@
 ///<reference path="../../headers/common.d.ts" />
 
 import config from 'app/core/config';
-import _ from 'lodash';
 import coreModule from 'app/core/core_module';
 import Remarkable from 'remarkable';
 
@@ -18,7 +17,7 @@ export class OrgUsersCtrl {
   addUsersBtnName: string;
 
   /** @ngInject */
-  constructor(private $scope, private $http, private backendSrv, navModelSrv, $sce) {
+  constructor(private $scope, private backendSrv, navModelSrv, $sce) {
     this.user = {
       loginOrEmail: '',
       role: 'Viewer',
@@ -92,20 +91,25 @@ export class OrgUsersCtrl {
     evt.stopPropagation();
   }
 
-  openAddUsersView() {
-    var modalScope = this.$scope.$new();
-    modalScope.invitesSent = this.get.bind(this);
+ getInviteUrl(invite) {
+   return invite.url;
+ }
 
-    var src = config.disableLoginForm
-      ? 'public/app/features/org/partials/add_user.html'
-      : 'public/app/features/org/partials/invite.html';
+ openAddUsersView() {
+   var modalScope = this.$scope.$new();
+   modalScope.invitesSent = this.get.bind(this);
 
-    this.$scope.appEvent('show-modal', {
-      src: src,
-      modalClass: 'invite-modal',
-      scope: modalScope
-    });
-  }
+   var src = config.disableLoginForm
+     ? 'public/app/features/org/partials/add_user.html'
+     : 'public/app/features/org/partials/invite.html';
+
+     this.$scope.appEvent('show-modal', {
+       src: src,
+       modalClass: 'invite-modal',
+       scope: modalScope
+     });
+ }
+
 }
 
 coreModule.controller('OrgUsersCtrl', OrgUsersCtrl);
