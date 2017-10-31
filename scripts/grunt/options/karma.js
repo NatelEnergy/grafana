@@ -14,7 +14,7 @@ module.exports = function(config) {
     },
 
     test: {
-      configFile: 'karma.conf.js'
+      configFile: 'karma.conf.js',
     }
   };
 };
