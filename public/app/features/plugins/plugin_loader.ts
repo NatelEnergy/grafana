@@ -126,6 +126,10 @@ export function importPluginModule(path: string): Promise<any> {
   if (builtIn) {
     return Promise.resolve(builtIn);
   }
+
+console.log( 'importPluginModule', path );
+
+
   return System.import(path);
 }
 
