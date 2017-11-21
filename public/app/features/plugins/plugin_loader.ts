@@ -99,7 +99,7 @@ exposeToPlugin('app/core/core', {
   coreModule: coreModule,
   appEvents: appEvents,
   contextSrv: contextSrv,
-  Emitter: Emitter,
+  Emitter: Emitter,  // Only in Natel Version
   __esModule: true
 });
 
@@ -127,10 +127,8 @@ export function importPluginModule(path: string): Promise<any> {
     return Promise.resolve(builtIn);
   }
 
-console.log( 'importPluginModule', path );
-
-
-  return System.import(path);
+  // Make sure the path does not have a backslash in it
+  return System.import(path.replace('\\', '/'));
 }
 
 export function loadPluginCss(options) {
