@@ -120,7 +120,7 @@ func setIndexViewData(c *middleware.Context) (*dtos.IndexViewData, error) {
 
 	if c.IsSignedIn {
 		profileNode := &dtos.NavLink{
-			Text:         c.SignedInUser.Name,
+			Text:         c.SignedInUser.NameOrFallback(),
 			SubTitle:     c.SignedInUser.Login,
 			Id:           "profile",
 			Img:          data.User.GravatarUrl,
