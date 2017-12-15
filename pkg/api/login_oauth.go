@@ -71,17 +71,6 @@ func OAuthLogin(ctx *middleware.Context) {
 		return
 	}
 
-	if ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE) == nil {
-		if ctx.Query("redirected") == "yes" {
-			ctx.Handle(404, "No OAuth Session Found", errors.New(name))
-			return
-		}
-		loc := setting.AppUrl + "login/" + name + "?" + ctx.Req.URL.RawQuery + "&redirected=yes"
-		ctx.Redirect(loc)
-		return
-	}
-
-	// verify state string
 	savedState, ok := ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE).(string)
 	if !ok {
 		ctx.Handle(500, "login.OAuthLogin(missing saved state)", nil)
