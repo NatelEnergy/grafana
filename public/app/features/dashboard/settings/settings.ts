@@ -1,5 +1,6 @@
 import { coreModule, appEvents, contextSrv } from 'app/core/core';
 import { DashboardModel } from '../dashboard_model';
+import './panels'; // ?? necessary
 import $ from 'jquery';
 import _ from 'lodash';
 
@@ -41,6 +42,7 @@ export class SettingsCtrl {
       this.sections.push({ title: 'Annotations', id: 'annotations', icon: 'gicon gicon-annotation' });
       this.sections.push({ title: 'Variables', id: 'templating', icon: 'gicon gicon-variable' });
       this.sections.push({ title: 'Links', id: 'links', icon: 'gicon gicon-link' });
+      this.sections.push({ title: 'Panels', id: 'panels', icon: 'icon-gf icon-gf-panel' });
     }
 
     if (this.dashboard.id && this.dashboard.meta.canSave) {
