@@ -82,17 +82,22 @@ export class TimePickerCtrl {
 
     var days = duration.asDays();
     if (days > 10) {
-      this.tooltip += "<br/>" + duration.humanize();
+      this.tooltip += "<br/><br/>" + duration.humanize();
     } else {
       var lines = 0;
       var h = duration.hours();
       var m = duration.minutes();
       var s = duration.seconds();
+      this.tooltip += "<br/>";
 
       if (days > 1) {
         this.tooltip += "<br/>" + duration.days() + " days.";
         lines++;
+      } else if (days === 1) {
+        this.tooltip += "<br/>1 day";
+        lines++;
       }
+
       if (h > 0 && lines < 2) {
         this.tooltip += "<br/>" + h + " hours";
         lines++;

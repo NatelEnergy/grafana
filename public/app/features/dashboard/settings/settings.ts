@@ -2,7 +2,7 @@ import { coreModule, appEvents, contextSrv } from "app/core/core";
 import { DashboardModel } from "../dashboard_model";
 import $ from "jquery";
 import _ from "lodash";
-import "./panels"; // ?? necessary
+import "./panels";
 
 export class SettingsCtrl {
   dashboard: DashboardModel;
