@@ -15,13 +15,7 @@ export class SettingsCtrl {
   sections: any[];
 
   /** @ngInject */
-  constructor(
-    private $scope,
-    private $location,
-    private $rootScope,
-    private backendSrv,
-    private dashboardSrv
-  ) {
+  constructor(private $scope, private $location, private $rootScope, private backendSrv, private dashboardSrv) {
     // temp hack for annotations and variables editors
     // that rely on inherited scope
     $scope.dashboard = this.dashboard;
@@ -37,11 +31,7 @@ export class SettingsCtrl {
     this.buildSectionList();
     this.onRouteUpdated();
 
-    $rootScope.onAppEvent(
-      '$routeUpdate',
-      this.onRouteUpdated.bind(this),
-      $scope
-    );
+    $rootScope.onAppEvent('$routeUpdate', this.onRouteUpdated.bind(this), $scope);
   }
 
   buildSectionList() {
@@ -145,12 +135,10 @@ export class SettingsCtrl {
   makeEditable() {
     this.dashboard.editable = true;
 
-    return this.dashboardSrv
-      .saveDashboard({ makeEditable: true, overwrite: false })
-      .then(() => {
-        // force refresh whole page
-        window.location.href = window.location.href;
-      });
+    return this.dashboardSrv.saveDashboard({ makeEditable: true, overwrite: false }).then(() => {
+      // force refresh whole page
+      window.location.href = window.location.href;
+    });
   }
 
   deleteDashboard() {
@@ -182,16 +170,12 @@ export class SettingsCtrl {
 
   deleteDashboardConfirmed() {
     this.backendSrv.deleteDashboard(this.dashboard.meta.slug).then(() => {
-      appEvents.emit('alert-success', [
-        'Dashboard Deleted',
-        this.dashboard.title + ' has been deleted',
-      ]);
+      appEvents.emit('alert-success', ['Dashboard Deleted', this.dashboard.title + ' has been deleted']);
       this.$location.url('/');
     });
   }
 
   onFolderChange(folder) {
-    this.dashboard.folderId = folder.id;
     this.dashboard.meta.folderId = folder.id;
     this.dashboard.meta.folderTitle = folder.title;
   }

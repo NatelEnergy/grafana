@@ -64,8 +64,7 @@ function setupAngularRoutes($routeProvider, $locationProvider) {
       pageClass: 'page-dashboard',
     })
     .when('/dashboard/import', {
-      templateUrl:
-        'public/app/features/dashboard/partials/dashboard_import.html',
+      templateUrl: 'public/app/features/dashboard/partials/dashboard_import.html',
       controller: 'DashboardImportCtrl',
       controllerAs: 'ctrl',
     })
@@ -95,20 +94,17 @@ function setupAngularRoutes($routeProvider, $locationProvider) {
       controllerAs: 'ctrl',
     })
     .when('/dashboards/folder/:folderId/:slug/permissions', {
-      templateUrl:
-        'public/app/features/dashboard/partials/folder_permissions.html',
+      templateUrl: 'public/app/features/dashboard/partials/folder_permissions.html',
       controller: 'FolderPermissionsCtrl',
       controllerAs: 'ctrl',
     })
     .when('/dashboards/folder/:folderId/:slug/settings', {
-      templateUrl:
-        'public/app/features/dashboard/partials/folder_settings.html',
+      templateUrl: 'public/app/features/dashboard/partials/folder_settings.html',
       controller: 'FolderSettingsCtrl',
       controllerAs: 'ctrl',
     })
     .when('/dashboards/folder/:folderId/:slug', {
-      templateUrl:
-        'public/app/features/dashboard/partials/folder_dashboards.html',
+      templateUrl: 'public/app/features/dashboard/partials/folder_dashboards.html',
       controller: 'FolderDashboardsCtrl',
       controllerAs: 'ctrl',
     })
@@ -142,6 +138,12 @@ function setupAngularRoutes($routeProvider, $locationProvider) {
     .when('/org/teams', {
       templateUrl: 'public/app/features/org/partials/teams.html',
       controller: 'TeamsCtrl',
+      controllerAs: 'ctrl',
+      resolve: loadOrgBundle,
+    })
+    .when('/org/teams/new', {
+      templateUrl: 'public/app/features/org/partials/create_team.html',
+      controller: 'CreateTeamCtrl',
       controllerAs: 'ctrl',
       resolve: loadOrgBundle,
     })
@@ -275,22 +277,19 @@ function setupAngularRoutes($routeProvider, $locationProvider) {
       resolve: loadAlertingBundle,
     })
     .when('/alerting/notifications', {
-      templateUrl:
-        'public/app/features/alerting/partials/notifications_list.html',
+      templateUrl: 'public/app/features/alerting/partials/notifications_list.html',
       controller: 'AlertNotificationsListCtrl',
       controllerAs: 'ctrl',
       resolve: loadAlertingBundle,
     })
     .when('/alerting/notification/new', {
-      templateUrl:
-        'public/app/features/alerting/partials/notification_edit.html',
+      templateUrl: 'public/app/features/alerting/partials/notification_edit.html',
       controller: 'AlertNotificationEditCtrl',
       controllerAs: 'ctrl',
       resolve: loadAlertingBundle,
     })
     .when('/alerting/notification/:id/edit', {
-      templateUrl:
-        'public/app/features/alerting/partials/notification_edit.html',
+      templateUrl: 'public/app/features/alerting/partials/notification_edit.html',
       controller: 'AlertNotificationEditCtrl',
       controllerAs: 'ctrl',
       resolve: loadAlertingBundle,

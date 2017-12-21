@@ -8,18 +8,7 @@ export class TimePickerCtrl {
   static tooltipFormat = 'MMM D, YYYY HH:mm:ss';
   static defaults = {
     time_options: ['5m', '15m', '1h', '6h', '12h', '24h', '2d', '7d', '30d'],
-    refresh_intervals: [
-      '5s',
-      '10s',
-      '30s',
-      '1m',
-      '5m',
-      '15m',
-      '30m',
-      '1h',
-      '2h',
-      '1d',
-    ],
+    refresh_intervals: ['5s', '10s', '30s', '1m', '5m', '15m', '30m', '1h', '2h', '1d'],
   };
 
   dashboard: any;
@@ -150,10 +139,7 @@ export class TimePickerCtrl {
 
     this.onRefresh();
     this.editTimeRaw = this.timeRaw;
-    this.timeOptions = rangeUtil.getRelativeTimesList(
-      this.panel,
-      this.rangeString
-    );
+    this.timeOptions = rangeUtil.getRelativeTimesList(this.panel, this.rangeString);
     this.refresh = {
       value: this.dashboard.refresh,
       options: _.map(this.panel.refresh_intervals, (interval: any) => {
@@ -175,9 +161,7 @@ export class TimePickerCtrl {
   }
 
   absoluteFromChanged() {
-    this.editTimeRaw.from = this.getAbsoluteMomentForTimezone(
-      this.absolute.fromJs
-    );
+    this.editTimeRaw.from = this.getAbsoluteMomentForTimezone(this.absolute.fromJs);
   }
 
   absoluteToChanged() {
@@ -185,9 +169,7 @@ export class TimePickerCtrl {
   }
 
   getAbsoluteMomentForTimezone(jsDate) {
-    return this.dashboard.isTimezoneUtc()
-      ? moment(jsDate).utc()
-      : moment(jsDate);
+    return this.dashboard.isTimezoneUtc() ? moment(jsDate).utc() : moment(jsDate);
   }
 
   setRelativeFilter(timespan) {
@@ -228,14 +210,8 @@ export function timePickerDirective() {
   };
 }
 
-angular
-  .module('grafana.directives')
-  .directive('gfTimePickerSettings', settingsDirective);
-angular
-  .module('grafana.directives')
-  .directive('gfTimePicker', timePickerDirective);
+angular.module('grafana.directives').directive('gfTimePickerSettings', settingsDirective);
+angular.module('grafana.directives').directive('gfTimePicker', timePickerDirective);
 
 import { inputDateDirective } from './input_date';
-angular
-  .module('grafana.directives')
-  .directive('inputDatetime', inputDateDirective);
+angular.module('grafana.directives').directive('inputDatetime', inputDateDirective);

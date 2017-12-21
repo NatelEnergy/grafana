@@ -11,13 +11,7 @@ export class BackendSrv {
   private noBackendCache: boolean;
 
   /** @ngInject */
-  constructor(
-    private $http,
-    private alertSrv,
-    private $q,
-    private $timeout,
-    private contextSrv
-  ) {}
+  constructor(private $http, private alertSrv, private $q, private $timeout, private contextSrv) {}
 
   get(url, params?) {
     return this.request({ method: 'GET', url: url, params: params });
@@ -109,11 +103,7 @@ export class BackendSrv {
       },
       err => {
         // handle unauthorized
-        if (
-          err.status === 401 &&
-          this.contextSrv.user.isSignedIn &&
-          firstAttempt
-        ) {
+        if (err.status === 401 && this.contextSrv.user.isSignedIn && firstAttempt) {
           return this.loginPing().then(() => {
             options.retry = 1;
             return this.request(options);
@@ -242,7 +232,7 @@ export class BackendSrv {
 
     return this.post('/api/dashboards/db/', {
       dashboard: dash,
-      folderId: dash.folderId,
+      folderId: options.folderId,
       overwrite: options.overwrite === true,
       message: options.message || '',
     });
@@ -295,17 +285,14 @@ export class BackendSrv {
     const tasks = [];
 
     for (let slug of dashboardSlugs) {
-      tasks.push(
-        this.createTask(this.moveDashboard.bind(this), true, slug, toFolder)
-      );
+      tasks.push(this.createTask(this.moveDashboard.bind(this), true, slug, toFolder));
     }
 
     return this.executeInOrder(tasks, []).then(result => {
       return {
         totalCount: result.length,
         successCount: _.filter(result, { succeeded: true }).length,
-        alreadyInFolderCount: _.filter(result, { alreadyInFolder: true })
-          .length,
+        alreadyInFolderCount: _.filter(result, { alreadyInFolder: true }).length,
       };
     });
   }
@@ -316,28 +303,27 @@ export class BackendSrv {
     this.getDashboard('db', slug).then(fullDash => {
       const model = new DashboardModel(fullDash.dashboard, fullDash.meta);
 
-      if (
-        (!fullDash.meta.folderId && toFolder.id === 0) ||
-        fullDash.meta.folderId === toFolder.id
-      ) {
+      if ((!fullDash.meta.folderId && toFolder.id === 0) || fullDash.meta.folderId === toFolder.id) {
         deferred.resolve({ alreadyInFolder: true });
         return;
       }
 
-      model.folderId = toFolder.id;
-      model.meta.folderId = toFolder.id;
-      model.meta.folderTitle = toFolder.title;
       const clone = model.getSaveModelClone();
+      let options = {
+        folderId: toFolder.id,
+        overwrite: false,
+      };
 
-      this.saveDashboard(clone, {})
+      this.saveDashboard(clone, options)
         .then(() => {
           deferred.resolve({ succeeded: true });
         })
         .catch(err => {
           if (err.data && err.data.status === 'plugin-dashboard') {
             err.isHandled = true;
+            options.overwrite = true;
 
-            this.saveDashboard(clone, { overwrite: true })
+            this.saveDashboard(clone, options)
               .then(() => {
                 deferred.resolve({ succeeded: true });
               })
