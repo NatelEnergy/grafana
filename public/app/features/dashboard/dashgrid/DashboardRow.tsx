@@ -78,22 +78,15 @@ export class DashboardRow extends React.Component<DashboardRowProps, any> {
       'fa-chevron-right': this.state.collapsed,
     });
 
-    let title = templateSrv.replaceWithText(
-      this.props.panel.title,
-      this.props.panel.scopedVars
-    );
-    const hiddenPanels = this.props.panel.panels
-      ? this.props.panel.panels.length
-      : 0;
+    let title = templateSrv.replaceWithText(this.props.panel.title, this.props.panel.scopedVars);
+    const hiddenPanels = this.props.panel.panels ? this.props.panel.panels.length : 0;
 
     return (
       <div className={classes}>
         <a className="dashboard-row__title pointer" onClick={this.toggle}>
           <i className={chevronClass} />
           {title}
-          <span className="dashboard-row__panel_count">
-            ({hiddenPanels} hidden panels)
-          </span>
+          <span className="dashboard-row__panel_count">({hiddenPanels} hidden panels)</span>
         </a>
         <div className="dashboard-row__actions">
           <a className="pointer" onClick={this.openSettings}>
