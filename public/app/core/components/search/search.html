@@ -3,22 +3,22 @@
 
 <div class="search-container" ng-if="ctrl.isOpen">
 
-  <div class="search-field-wrapper">
-    <div class="search-field-icon pointer" ng-click="ctrl.closeSearch()"><i class="fa fa-search"></i></div>
+	<div class="search-field-wrapper">
+		<div class="search-field-icon pointer" ng-click="ctrl.closeSearch()"><i class="fa fa-search"></i></div>
 
-    <input type="text" placeholder="Find dashboards by name" give-focus="ctrl.giveSearchFocus" tabindex="1"
-            ng-keydown="ctrl.keyDown($event)"
-            ng-model="ctrl.query.query"
-            ng-model-options="{ debounce: 500 }"
-            spellcheck='false'
-            ng-change="ctrl.search()"
-            ng-blur="ctrl.searchInputBlur()"
-            />
+		<input type="text" placeholder="Find dashboards by name" give-focus="ctrl.giveSearchFocus" tabindex="1"
+						ng-keydown="ctrl.keyDown($event)"
+						ng-model="ctrl.query.query"
+						ng-model-options="{ debounce: 500 }"
+						spellcheck='false'
+						ng-change="ctrl.search()"
+						ng-blur="ctrl.searchInputBlur()"
+						/>
 
-    <div class="search-field-spacer"></div>
-  </div>
+		<div class="search-field-spacer"></div>
+	</div>
 
-  <div class="search-dropdown">
+	<div class="search-dropdown">
     <div class="search-dropdown__col_1">
         <div class="search-results-container" grafana-scrollbar>
           <h6 ng-show="!ctrl.isLoading && ctrl.results.length === 0">No dashboards matching your query were found.</h6>
@@ -66,8 +66,10 @@
         <!--
         <a class="search-filter-box-link" target="_blank" href="https://grafana.com/dashboards?utm_source=grafana_search">
           <img src="public/img/icn-dashboard-tiny.svg" width="20" /> Find  dashboards on Grafana.com
-        </a>-->
+        </a>
+        -->
       </div>
     </div>
   </div>
 </div>
+
