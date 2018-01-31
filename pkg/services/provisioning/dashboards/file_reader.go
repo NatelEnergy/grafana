@@ -34,9 +34,15 @@ type fileReader struct {
 }
 
 func NewDashboardFileReader(cfg *DashboardsAsConfig, log log.Logger) (*fileReader, error) {
-	path, ok := cfg.Options["folder"].(string)
+	var path string
+	path, ok := cfg.Options["path"].(string)
 	if !ok {
-		return nil, fmt.Errorf("Failed to load dashboards. folder param is not a string")
+		path, ok = cfg.Options["folder"].(string)
+		if !ok {
+			return nil, fmt.Errorf("Failed to load dashboards. path param is not a string")
+		}
+
+		log.Warn("[Deprecated] The folder property is deprecated. Please use path instead.")
 	}
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
@@ -145,6 +151,17 @@ func createWalkFn(fr *fileReader, folderId int64) filepath.WalkFunc {
 			return nil
 		}
 
+		checkFilepath, err := filepath.EvalSymlinks(path)
+
+		if path != checkFilepath {
+			path = checkFilepath
+			fi, err := os.Lstat(checkFilepath)
+			if err != nil {
+				return err
+			}
+			fileInfo = fi
+		}
+
 		cachedDashboard, exist := fr.cache.getCache(path)
 		if exist && cachedDashboard.UpdatedAt == fileInfo.ModTime() {
 			return nil
@@ -156,13 +173,15 @@ func createWalkFn(fr *fileReader, folderId int64) filepath.WalkFunc {
 			return nil
 		}
 
-		// id = 0 indicates ID validation should be avoided before writing to the db.
-		dash.Dashboard.Id = 0
+		if dash.Dashboard.Id != 0 {
+			fr.log.Error("Cannot provision dashboard. Please remove the id property from the json file")
+			return nil
+		}
 
 		cmd := &models.GetDashboardQuery{Slug: dash.Dashboard.Slug}
 		err = bus.Dispatch(cmd)
 
-		// if we dont have the dashboard in the db, save it!
+		// if we don't have the dashboard in the db, save it!
 		if err == models.ErrDashboardNotFound {
 			fr.log.Debug("saving new dashboard", "file", path)
 			_, err = fr.dashboardRepo.SaveDashboard(dash)
@@ -181,6 +200,7 @@ func createWalkFn(fr *fileReader, folderId int64) filepath.WalkFunc {
 
 		fr.log.Debug("loading dashboard from disk into database.", "file", path)
 		_, err = fr.dashboardRepo.SaveDashboard(dash)
+
 		return err
 	}
 }
