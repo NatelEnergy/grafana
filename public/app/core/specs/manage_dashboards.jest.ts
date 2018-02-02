@@ -30,7 +30,7 @@ describe('ManageDashboards', () => {
         },
         {
           id: 0,
-          title: 'Root',
+          title: 'General',
           icon: 'fa fa-folder-open',
           uri: 'db/something-else',
           type: 'dash-db',
@@ -363,7 +363,7 @@ describe('ManageDashboards', () => {
           },
           {
             id: 0,
-            title: 'Root',
+            title: 'General',
             items: [{ id: 3, checked: true }],
             checked: false,
           },
@@ -391,7 +391,7 @@ describe('ManageDashboards', () => {
           },
           {
             id: 0,
-            title: 'Root',
+            title: 'General',
             items: [{ id: 3, checked: false }],
             checked: false,
           },
@@ -420,7 +420,7 @@ describe('ManageDashboards', () => {
           },
           {
             id: 0,
-            title: 'Root',
+            title: 'General',
             items: [{ id: 3, checked: true }],
             checked: false,
           },
@@ -455,7 +455,7 @@ describe('ManageDashboards', () => {
           },
           {
             id: 0,
-            title: 'Root',
+            title: 'General',
             items: [{ id: 3, checked: false }],
             checked: false,
           },
@@ -483,22 +483,22 @@ describe('ManageDashboards', () => {
       ctrl.sections = [
         {
           id: 1,
+          uid: 'folder',
           title: 'folder',
-          items: [{ id: 2, checked: true, slug: 'folder-dash' }],
+          items: [{ id: 2, checked: true, uid: 'folder-dash' }],
           checked: true,
-          slug: 'folder',
         },
         {
           id: 3,
           title: 'folder-2',
-          items: [{ id: 3, checked: true, slug: 'folder-2-dash' }],
+          items: [{ id: 3, checked: true, uid: 'folder-2-dash' }],
           checked: false,
-          slug: 'folder-2',
+          uid: 'folder-2',
         },
         {
           id: 0,
-          title: 'Root',
-          items: [{ id: 3, checked: true, slug: 'root-dash' }],
+          title: 'General',
+          items: [{ id: 3, checked: true, uid: 'root-dash' }],
           checked: true,
         },
       ];
@@ -535,14 +535,14 @@ describe('ManageDashboards', () => {
         {
           id: 1,
           title: 'folder',
-          items: [{ id: 2, checked: true, slug: 'dash' }],
+          items: [{ id: 2, checked: true, uid: 'dash' }],
           checked: false,
-          slug: 'folder',
+          uid: 'folder',
         },
         {
           id: 0,
-          title: 'Root',
-          items: [{ id: 3, checked: true, slug: 'dash-2' }],
+          title: 'General',
+          items: [{ id: 3, checked: true, uid: 'dash-2' }],
           checked: false,
         },
       ];
