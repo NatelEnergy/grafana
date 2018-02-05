@@ -4,7 +4,7 @@
     "company": "Grafana Labs"
   },
   "name": "natel-grafana",
-  "version": "5.0.0-pre1",
+  "version": "5.0.0-beta1",
   "repository": {
     "type": "git",
     "url": "https://github.com/NatelEnergy/grafana.git"

@@ -1,4 +1,6 @@
-# 5.0.0 (unreleased / master branch)
+# 5.0.0-beta2 (unrelased)
+
+# 5.0.0-beta1 (2018-02-05)
 
 Grafana v5.0 is going to be the biggest and most foundational release Grafana has ever had, coming with a ton of UX improvements, a new dashboard grid engine, dashboard folders, user teams and permissions. Checkout out this [video preview](https://www.youtube.com/watch?v=BC_YRNpqj5k) of Grafana v5.
 
@@ -9,6 +11,7 @@ Grafana v5.0 is going to be the biggest and most foundational release Grafana ha
 - **Templating**: Vertical repeat direction for panel repeats.
 - **UX**: Major update to page header and navigation
 - **Dashboard settings**: Combine dashboard settings views into one with side menu, [#9750](https://github.com/grafana/grafana/issues/9750)
+- **Persistent dashboard url's**: New url's for dashboards that allows renaming dashboards without breaking links. [#7883](https://github.com/grafana/grafana/issues/7883)
 
 ## Breaking changes
 
@@ -17,6 +20,9 @@ Config files for provisioning datasources as configuration have changed from `/c
 From `/etc/grafana/datasources` to `/etc/grafana/provisioning/datasources` when installed with deb/rpm packages.
 
 * **Pagerduty** The notifier now defaults to not auto resolve incidents. More details at [#10222](https://github.com/grafana/grafana/issues/10222)
+
+* **HTTP API**
+  - `GET /api/alerts` property dashboardUri renamed to url and is now the full url (that is including app sub url).
 
 ## New Dashboard Grid
 
@@ -58,6 +64,7 @@ Dashboard panels and rows are positioned using a gridPos object `{x: 0, y: 0, w:
 * **Singlestat**: suppress error when result contains no datapoints [#9636](https://github.com/grafana/grafana/issues/9636), thx [@utkarshcmu](https://github.com/utkarshcmu)
 * **Postgres/MySQL**: Control quoting in SQL-queries when using template variables [#9030](https://github.com/grafana/grafana/issues/9030), thanks [@svenklemm](https://github.com/svenklemm)
 * **Pagerduty**: Pagerduty dont auto resolve incidents by default anymore. [#10222](https://github.com/grafana/grafana/issues/10222)
+* **Cloudwatch**: Fix for multi-valued templated queries. [#9903](https://github.com/grafana/grafana/issues/9903)
 
 ## Tech
 * **RabbitMq**: Remove support for publishing events to RabbitMQ [#9645](https://github.com/grafana/grafana/issues/9645)
