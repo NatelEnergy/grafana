@@ -21,4 +21,8 @@
   .fa-star {
     color: $orange;
   }
+
+  &--no-section-header {
+    margin-top: 0;
+  }
 }
