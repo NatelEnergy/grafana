@@ -74,6 +74,7 @@ func NewOAuthService() {
 			TlsClientKey:   sec.Key("tls_client_key").String(),
 			TlsClientCa:    sec.Key("tls_client_ca").String(),
 			TlsSkipVerify:  sec.Key("tls_skip_verify_insecure").MustBool(),
+			RedirectUrl:    sec.Key("redirect_url").String(),
 		}
 
 		if !info.Enabled {
@@ -93,7 +94,7 @@ func NewOAuthService() {
 				AuthURL:  info.AuthUrl,
 				TokenURL: info.TokenUrl,
 			},
-			RedirectURL: strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name,
+			RedirectURL: info.RedirectUrl,
 			Scopes:      info.Scopes,
 		}
 
@@ -151,8 +152,7 @@ func NewOAuthService() {
 					AuthURL:  setting.GrafanaComUrl + "/oauth2/authorize",
 					TokenURL: setting.GrafanaComUrl + "/api/oauth2/token",
 				},
-				RedirectURL: strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name,
-				Scopes:      info.Scopes,
+				Scopes: info.Scopes,
 			}
 
 			SocialMap["grafana_com"] = &SocialGrafanaCom{
@@ -164,6 +164,10 @@ func NewOAuthService() {
 				allowSignup:          info.AllowSignup,
 				allowedOrganizations: util.SplitString(sec.Key("allowed_organizations").String()),
 			}
+		}
+
+		if len(config.RedirectURL) == 0 {
+			config.RedirectURL = strings.TrimSuffix(setting.AppUrl, "/") + SocialBaseUrl + name
 		}
 	}
 }
