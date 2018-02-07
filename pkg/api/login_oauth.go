@@ -71,6 +71,17 @@ func OAuthLogin(ctx *middleware.Context) {
 		return
 	}
 
+	// https://github.com/grafana/grafana/pull/7046
+	if ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE) == nil {
+		if ctx.Query("redirected") == "yes" {
+			ctx.Handle(500, "login.OAuthLogin(missing saved state) after redirect", nil)
+			return
+		}
+		loc := setting.AppUrl + "login/" + name + "?" + ctx.Req.URL.RawQuery + "&redirected=yes"
+		ctx.Redirect(loc)
+		return
+	}
+
 	savedState, ok := ctx.Session.Get(middleware.SESS_KEY_OAUTH_STATE).(string)
 	if !ok {
 		ctx.Handle(500, "login.OAuthLogin(missing saved state)", nil)
