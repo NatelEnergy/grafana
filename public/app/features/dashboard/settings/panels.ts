@@ -1,7 +1,7 @@
-import angular from "angular";
-import config from "app/core/config";
-import { appEvents } from "app/core/core";
-import _ from "lodash";
+import angular from 'angular';
+import config from 'app/core/config';
+import { appEvents } from 'app/core/core';
+import _ from 'lodash';
 
 export class DashPanelsEditorCtrl {
   dashboard: any;
@@ -27,7 +27,7 @@ export class DashPanelsEditorCtrl {
       alerts: 0,
       sources: [],
       descriptions: 0,
-      skip: {} // id = true
+      skip: {}, // id = true
     };
     let sources = {};
 
@@ -44,13 +44,13 @@ export class DashPanelsEditorCtrl {
         } else {
           sources[panel.datasource] = {
             name: panel.datasource,
-            count: 1
+            count: 1,
           };
         }
       }
     });
-    stats.sources = _.sortBy(_.values(sources), ["-count"]);
-    this.datasources = [""];
+    stats.sources = _.sortBy(_.values(sources), ['-count']);
+    this.datasources = [''];
     for (let i = 0; i < stats.sources.length; i++) {
       this.datasources.push(stats.sources[i].name);
     }
@@ -64,7 +64,7 @@ export class DashPanelsEditorCtrl {
   getIconFor(panel) {
     if (panel) {
       let meta = config.panels[panel.type];
-      if (_.has(meta, "info.logos")) {
+      if (_.has(meta, 'info.logos')) {
         let logos = meta.info.logos;
         if (logos.small != null) {
           return logos.small;
@@ -74,18 +74,21 @@ export class DashPanelsEditorCtrl {
         }
       }
       if (this.isRow(panel)) {
-        return "/public/img/icn-row.svg";
+        return '/public/img/icn-row.svg';
       }
     }
-    return "/public/img/icn-panel.svg";
+    return '/public/img/icn-panel.svg';
   }
 
   isRow(panel) {
-    return "row" === panel.type;
+    return 'row' === panel.type;
   }
 
-  layoutChanged() {
-    console.log("TODO... somehow update the layout...");
+  layoutChanged(panel) {
+    console.log('TODO... somehow update the layout...', panel, this);
+
+    this.dashboard.events.emit('panel-size-changed');
+    //this.dashboard.events.emit('row-expanded'); // causes grid triggerForceUpdate
   }
 
   // Copiedfrom panel_ctrl... can we use the same one?
@@ -95,21 +98,20 @@ export class DashPanelsEditorCtrl {
       var text2, confirmText;
 
       if (panel.alert) {
-        text2 =
-          "Panel includes an alert rule, removing panel will also remove alert rule";
-        confirmText = "YES";
+        text2 = 'Panel includes an alert rule, removing panel will also remove alert rule';
+        confirmText = 'YES';
       }
 
-      appEvents.emit("confirm-modal", {
-        title: "Remove Panel",
-        text: "Are you sure you want to remove this panel?",
+      appEvents.emit('confirm-modal', {
+        title: 'Remove Panel',
+        text: 'Are you sure you want to remove this panel?',
         text2: text2,
-        icon: "fa-trash",
+        icon: 'fa-trash',
         confirmText: confirmText,
-        yesText: "Remove",
+        yesText: 'Remove',
         onConfirm: () => {
           this.removePanel(panel, false);
-        }
+        },
       });
       return;
     }
@@ -139,35 +141,33 @@ export class DashPanelsEditorCtrl {
   }
 
   openDatasource(name: string) {
-    console.log("TODO.... open: ", name);
+    console.log('TODO.... open: ', name);
   }
 
   // Copiedfrom panel_ctrl... can we use the same one?
   editPanelJson(panel) {
-    console.log("json", panel, this);
+    console.log('json', panel, this);
     let editScope = this.$scope.$root.$new();
     editScope.object = panel.getSaveModel();
     //   editScope.updateHandler = pctrl.bind(this);
-    this.$scope.$root.appEvent("show-modal", {
-      src: "public/app/partials/edit_json.html",
-      scope: editScope
+    this.$scope.$root.appEvent('show-modal', {
+      src: 'public/app/partials/edit_json.html',
+      scope: editScope,
     });
   }
 }
 
 function dashPanelsEditor() {
   return {
-    restrict: "E",
+    restrict: 'E',
     controller: DashPanelsEditorCtrl,
-    templateUrl: "public/app/features/dashboard/settings/panels.html",
+    templateUrl: 'public/app/features/dashboard/settings/panels.html',
     bindToController: true,
-    controllerAs: "ctrl",
+    controllerAs: 'ctrl',
     scope: {
-      dashboard: "="
-    }
+      dashboard: '=',
+    },
   };
 }
 
-angular
-  .module("grafana.directives")
-  .directive("dashPanelsEditor", dashPanelsEditor);
+angular.module('grafana.directives').directive('dashPanelsEditor', dashPanelsEditor);

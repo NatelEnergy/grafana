@@ -42,16 +42,16 @@
         <input ng-show="panel.alert" type="text" class="gf-form-input" ng-model="panel.alert.frequency" />
       </td>
       <td ng-show="ctrl.showGridPos" style="width: 4em; padding:0px; margin:0px;">
-        <input type="number" class="gf-form-input" ng-model="panel.gridPos.x" ng-change="ctrl.layoutChanged()"/>
+        <input type="number" class="gf-form-input" ng-model="panel.gridPos.x" ng-change="ctrl.layoutChanged(panel)"/>
       </td>
       <td ng-show="ctrl.showGridPos" style="width: 4em; padding:0px; margin:0px;">
-        <input type="number" class="gf-form-input" ng-model="panel.gridPos.y" ng-change="ctrl.layoutChanged()"/>
+        <input type="number" class="gf-form-input" ng-model="panel.gridPos.y" ng-change="ctrl.layoutChanged(panel)"/>
       </td>
       <td ng-show="ctrl.showGridPos" style="width: 4em; padding:0px; margin:0px;">
-        <input type="number" class="gf-form-input" ng-model="panel.gridPos.w" ng-change="ctrl.layoutChanged()" max="24"/>
+        <input type="number" class="gf-form-input" ng-model="panel.gridPos.w" ng-change="ctrl.layoutChanged(panel)" max="24"/>
       </td>
       <td ng-show="ctrl.showGridPos" style="width: 4em; padding:0px; margin:0px;">
-        <input type="number" class="gf-form-input" ng-model="panel.gridPos.h" ng-change="ctrl.layoutChanged()"/>
+        <input type="number" class="gf-form-input" ng-model="panel.gridPos.h" ng-change="ctrl.layoutChanged(panel)"/>
       </td>
       <td style="width: 1%">
         <a ng-click="ctrl.removePanel(panel, true)" class="btn btn-danger btn-small">
