@@ -4,7 +4,7 @@
     "company": "Grafana Labs"
   },
   "name": "natel-grafana",
-  "version": "5.0.0-beta4",
+  "version": "5.0.0-beta5",
   "repository": {
     "type": "git",
     "url": "https://github.com/NatelEnergy/grafana.git"
@@ -165,7 +165,7 @@
     "rst2html": "github:thoward/rst2html#990cb89",
     "rxjs": "^5.4.3",
     "tether": "^1.4.0",
-    "tether-drop": "https://github.com/torkelo/drop",
+    "tether-drop": "https://github.com/torkelo/drop/tarball/master",
     "tinycolor2": "^1.4.1"
   }
 }
