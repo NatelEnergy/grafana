@@ -58,8 +58,7 @@ jobs:
             - scripts/*.sh
             - scripts/publish
       - store_artifacts:
-          root: .
-          paths:
+          path:
             - dist/grafana*
 
   deploy-master:
