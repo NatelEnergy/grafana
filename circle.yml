@@ -57,6 +57,10 @@ jobs:
             - dist/grafana*
             - scripts/*.sh
             - scripts/publish
+      - store_artifacts:
+          root: .
+          paths:
+            - dist/grafana*
 
   deploy-master:
     docker:
@@ -67,9 +71,6 @@ jobs:
       - run:
           name: install awscli
           command: 'sudo pip install awscli'
-      - run:
-          name: Move to Artifacts
-          command: 'mv dist $CIRCLE_ARTIFACTS'
 
 workflows:
   version: 2
