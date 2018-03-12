@@ -59,7 +59,7 @@ jobs:
             - scripts/publish
       - store_artifacts:
           path:
-            - dist/grafana*
+            - dist
 
   deploy-master:
     docker:
