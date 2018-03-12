@@ -58,8 +58,7 @@ jobs:
             - scripts/*.sh
             - scripts/publish
       - store_artifacts:
-          path:
-            - dist
+          path: dist
 
   deploy-master:
     docker:
