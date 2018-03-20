@@ -6,7 +6,6 @@ import (
 
 	ms "github.com/go-macaron/session"
 	_ "github.com/go-macaron/session/memcache"
-	_ "github.com/go-macaron/session/mysql"
 	_ "github.com/go-macaron/session/postgres"
 	_ "github.com/go-macaron/session/redis"
 	"github.com/grafana/grafana/pkg/log"
@@ -25,6 +24,7 @@ var sessionOptions *ms.Options
 var StartSessionGC func()
 var GetSessionCount func() int
 var sessionLogger = log.New("session")
+var sessionConnMaxLifetime int64
 
 func init() {
 	StartSessionGC = func() {
@@ -37,9 +37,10 @@ func init() {
 	}
 }
 
-func Init(options *ms.Options) {
+func Init(options *ms.Options, connMaxLifetime int64) {
 	var err error
 	sessionOptions = prepareOptions(options)
+	sessionConnMaxLifetime = connMaxLifetime
 	sessionManager, err = ms.NewManager(options.Provider, *options)
 	if err != nil {
 		panic(err)
@@ -105,6 +106,18 @@ type SessionWrapper struct {
 }
 
 func (s *SessionWrapper) Start(c *macaron.Context) error {
+	// See https://github.com/grafana/grafana/issues/11155 for details on why
+	// a recover and retry is needed
+	defer func() error {
+		if err := recover(); err != nil {
+			var retryErr error
+			s.session, retryErr = s.manager.Start(c)
+			return retryErr
+		}
+
+		return nil
+	}()
+
 	var err error
 	s.session, err = s.manager.Start(c)
 	return err
