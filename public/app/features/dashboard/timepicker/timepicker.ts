@@ -22,7 +22,6 @@ export class TimePickerCtrl {
   refresh: any;
   isUtc: boolean;
   firstDayOfWeek: number;
-  closeDropdown: any;
   isOpen: boolean;
 
   /** @ngInject */
@@ -32,6 +31,7 @@ export class TimePickerCtrl {
     $rootScope.onAppEvent('shift-time-forward', () => this.move(1), $scope);
     $rootScope.onAppEvent('shift-time-backward', () => this.move(-1), $scope);
     $rootScope.onAppEvent('refresh', this.onRefresh.bind(this), $scope);
+    $rootScope.onAppEvent('closeTimepicker', this.openDropdown.bind(this), $scope);
 
     // init options
     this.panel = this.dashboard.timepicker;
@@ -133,7 +133,7 @@ export class TimePickerCtrl {
 
   openDropdown() {
     if (this.isOpen) {
-      this.isOpen = false;
+      this.closeDropdown();
       return;
     }
 
@@ -149,6 +149,12 @@ export class TimePickerCtrl {
 
     this.refresh.options.unshift({ text: 'off' });
     this.isOpen = true;
+    this.$rootScope.appEvent('timepickerOpen');
+  }
+
+  closeDropdown() {
+    this.isOpen = false;
+    this.$rootScope.appEvent('timepickerClosed');
   }
 
   applyCustom() {
@@ -157,7 +163,7 @@ export class TimePickerCtrl {
     }
 
     this.timeSrv.setTime(this.editTimeRaw);
-    this.isOpen = false;
+    this.closeDropdown();
   }
 
   absoluteFromChanged() {
@@ -180,7 +186,7 @@ export class TimePickerCtrl {
     }
 
     this.timeSrv.setTime(range);
-    this.isOpen = false;
+    this.closeDropdown();
   }
 }
 
