@@ -16,7 +16,6 @@ export default class InfluxDatasource {
   basicAuth: any;
   withCredentials: any;
   interval: any;
-  allowDatabaseQuery: boolean;
   supportAnnotations: boolean;
   supportMetrics: boolean;
   responseParser: any;
@@ -35,7 +34,6 @@ export default class InfluxDatasource {
     this.basicAuth = instanceSettings.basicAuth;
     this.withCredentials = instanceSettings.withCredentials;
     this.interval = (instanceSettings.jsonData || {}).timeInterval;
-    this.allowDatabaseQuery = (instanceSettings.jsonData || {}).allowDatabaseQuery === true;
     this.supportAnnotations = true;
     this.supportMetrics = true;
     this.responseParser = new ResponseParser();
@@ -168,6 +166,7 @@ export default class InfluxDatasource {
 
   metricFindQuery(query: string, options?: any) {
     var interpolated = this.templateSrv.replace(query, null, 'regex');
+
     return this._seriesQuery(interpolated, options).then(_.curry(this.responseParser.parse)(query));
   }
 
@@ -180,10 +179,10 @@ export default class InfluxDatasource {
   getTagValues(options) {
     var queryBuilder = new InfluxQueryBuilder({ measurement: '', tags: [] }, this.database);
     var query = queryBuilder.buildExploreQuery('TAG_VALUES', options.key);
-    return this.metricFindQuery(query);
+    return this.metricFindQuery(query, options);
   }
 
-  _seriesQuery(query, options?: any) {
+  _seriesQuery(query: string, options?: any) {
     if (!query) {
       return this.$q.when({ results: [] });
     }
@@ -227,10 +226,10 @@ export default class InfluxDatasource {
   }
 
   _influxRequest(method: string, url: string, data: any, options?: any) {
-    var currentUrl = this.urls.shift();
+    const currentUrl = this.urls.shift();
     this.urls.push(currentUrl);
 
-    var params: any = {};
+    let params: any = {};
 
     if (this.username) {
       params.u = this.username;
@@ -239,11 +238,6 @@ export default class InfluxDatasource {
 
     if (options && options.database) {
       params.db = options.database;
-      if (params.db !== this.database && !this.allowDatabaseQuery) {
-        return this.$q.reject({
-          message: 'This datasource does not allow changing database',
-        });
-      }
     } else if (this.database) {
       params.db = this.database;
     }
@@ -253,7 +247,7 @@ export default class InfluxDatasource {
       data = null;
     }
 
-    var req: any = {
+    let req: any = {
       method: method,
       url: currentUrl + url,
       params: params,
