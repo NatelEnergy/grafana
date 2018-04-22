@@ -101,18 +101,18 @@ jobs:
       - run:
           name: install awscli
           command: 'sudo pip install awscli'
-      - run:
-          name: deploy to s3
-          command: 'aws s3 sync ./dist s3://$BUCKET_NAME/master'
-      - run:
-          name: Trigger Windows build
-          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} master'
-      - run:
-          name: Trigger Docker build
-          command: './scripts/trigger_docker_build.sh ${TRIGGER_GRAFANA_PACKER_CIRCLECI_TOKEN}'
-      - run:
-          name: Publish to Grafana.com
-          command: './scripts/publish -apiKey ${GRAFANA_COM_API_KEY}'
+#      - run:
+#          name: deploy to s3
+#          command: 'aws s3 sync ./dist s3://$BUCKET_NAME/master'
+#      - run:
+#          name: Trigger Windows build
+#          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} master'
+#      - run:
+#          name: Trigger Docker build
+#          command: './scripts/trigger_docker_build.sh ${TRIGGER_GRAFANA_PACKER_CIRCLECI_TOKEN}'
+#      - run:
+#          name: Publish to Grafana.com
+#          command: './scripts/publish -apiKey ${GRAFANA_COM_API_KEY}'
 
   deploy-release:
     docker:
