@@ -17,6 +17,22 @@ jobs:
           name: check documentation spelling errors
           command: 'codespell -I ./words_to_ignore.txt docs/'
 
+  gometalinter:
+    docker:
+      - image: circleci/golang:1.10
+    working_directory: /go/src/github.com/grafana/grafana
+    steps:
+      - checkout
+      - run:
+          name: install gometalinter tool
+          command: 'go get -u github.com/alecthomas/gometalinter'
+      - run:
+          name: install linters
+          command: 'gometalinter --install'
+      - run:
+          name: run some linters
+          command: 'gometalinter --vendor --deadline 6m --disable-all --enable=structcheck --enable=unconvert --enable=varcheck ./pkg/...'
+
   test-frontend:
     docker:
       - image: circleci/node:6.11.4
@@ -85,6 +101,37 @@ jobs:
       - run:
           name: install awscli
           command: 'sudo pip install awscli'
+      - run:
+          name: deploy to s3
+          command: 'aws s3 sync ./dist s3://$BUCKET_NAME/master'
+      - run:
+          name: Trigger Windows build
+          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} master'
+      - run:
+          name: Trigger Docker build
+          command: './scripts/trigger_docker_build.sh ${TRIGGER_GRAFANA_PACKER_CIRCLECI_TOKEN}'
+      - run:
+          name: Publish to Grafana.com
+          command: './scripts/publish -apiKey ${GRAFANA_COM_API_KEY}'
+
+  deploy-release:
+    docker:
+      - image: circleci/python:2.7-stretch
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: install awscli
+          command: 'sudo pip install awscli'
+      - run:
+          name: deploy to s3
+          command: 'aws s3 sync ./dist s3://$BUCKET_NAME/release'
+      - run:
+          name: Trigger Windows build
+          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} release'
+      - run:
+          name: Trigger Docker build
+          command: './scripts/trigger_docker_build.sh ${TRIGGER_GRAFANA_PACKER_CIRCLECI_TOKEN} ${CIRCLE_TAG}'
 
 workflows:
   version: 2
