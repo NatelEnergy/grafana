@@ -117,6 +117,19 @@ func setIndexViewData(c *m.ReqContext) (*dtos.IndexViewData, error) {
 		Children: dashboardChildNavs,
 	})
 
+	if setting.ExploreEnabled {
+		data.NavTree = append(data.NavTree, &dtos.NavLink{
+			Text:     "Explore",
+			Id:       "explore",
+			SubTitle: "Explore your data",
+			Icon:     "fa fa-rocket",
+			Url:      setting.AppSubUrl + "/explore",
+			Children: []*dtos.NavLink{
+				{Text: "New tab", Icon: "gicon gicon-dashboard-new", Url: setting.AppSubUrl + "/explore"},
+			},
+		})
+	}
+
 	if c.IsSignedIn {
 		// Only set login if it's different from the name
 		var login string
@@ -289,7 +302,7 @@ func setIndexViewData(c *m.ReqContext) (*dtos.IndexViewData, error) {
 
 	data.NavTree = append(data.NavTree, &dtos.NavLink{
 		Text:         "Help",
-		SubTitle:     fmt.Sprintf(`Grafana v%s (%s)`, setting.BuildVersion, setting.BuildCommit),
+		SubTitle:     fmt.Sprintf(`%s v%s (%s)`, setting.ApplicationName, setting.BuildVersion, setting.BuildCommit),
 		Id:           "help",
 		Url:          "#",
 		Icon:         "gicon gicon-question",

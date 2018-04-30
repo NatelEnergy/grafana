@@ -35,15 +35,15 @@ type HTTPServer struct {
 	context       context.Context
 	streamManager *live.StreamManager
 	cache         *gocache.Cache
+	httpSrv       *http.Server
 
-	httpSrv *http.Server
+	RouteRegister RouteRegister `inject:""`
+	Bus           bus.Bus       `inject:""`
 }
 
-func NewHTTPServer() *HTTPServer {
-	return &HTTPServer{
-		log:   log.New("http.server"),
-		cache: gocache.New(5*time.Minute, 10*time.Minute),
-	}
+func (hs *HTTPServer) Init() {
+	hs.log = log.New("http.server")
+	hs.cache = gocache.New(5*time.Minute, 10*time.Minute)
 }
 
 func (hs *HTTPServer) Start(ctx context.Context) error {
