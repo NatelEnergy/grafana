@@ -32,6 +32,7 @@ export class PanelCtrl {
   events: Emitter;
   timing: any;
   loading: boolean;
+  wrapper: any; // dom element that contains the panel
 
   constructor($scope, $injector) {
     this.$injector = $injector;
@@ -66,6 +67,28 @@ export class PanelCtrl {
   }
 
   renderingCompleted() {
+    if (this.panel.dynamicHeight && this.wrapper) {
+      this.$timeout(() => {
+        let height = $(this.wrapper).outerHeight(true);
+        if (height > 10) {
+          const min = this.panel.dynamicHeightMIN || 50;
+          if (height < min) {
+            height = min;
+          }
+          if (this.panel.dynamicHeightMAX && height > this.panel.dynamicHeightMAX) {
+            height = this.panel.dynamicHeightMAX;
+          }
+
+          const h = Math.ceil(height / (GRID_CELL_HEIGHT + GRID_CELL_VMARGIN)) + 1;
+          if (h !== this.panel.gridPos.h) {
+            console.log('Dynamic Height Changed', this.height, height, h, this.panel.gridPos.h, this);
+            this.panel.gridPos.h = h;
+            this.events.emit('panel-size-changed');
+            this.dashboard.events.emit('row-expanded'); // triggers grid re-layout
+          }
+        }
+      }, 75);
+    }
     profiler.renderingCompleted(this.panel.id, this.timing);
   }
 
