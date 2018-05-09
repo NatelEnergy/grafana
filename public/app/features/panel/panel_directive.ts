@@ -22,7 +22,7 @@ var panelTemplate = `
 
     <div class="panel-content">
       <div class="panel-height-helper">
-        <ng-transclude class="panel-height-helper"></ng-transclude>
+        <ng-transclude></ng-transclude>
       </div>
     </div>
   </div>
@@ -119,7 +119,10 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
 
           // Save the wrapper div to check content height after render
           if (ctrl.panel.dynamicHeight) {
+            $(scroller).wrap('<div class="panel-height-helper"></div>');
+            scroller = panelContent.find(':first');
             ctrl.wrapper = $(scroller).find(':first');
+            $(ctrl.wrapper).removeClass('panel-height-helper');
           }
 
           scrollRoot.addClass(scrollRootClass);
