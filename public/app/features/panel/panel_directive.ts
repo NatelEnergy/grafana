@@ -70,6 +70,8 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
       var ctrl = scope.ctrl;
       var infoDrop;
       var panelScrollbar;
+      var panelInnerContent;
+      var panelInnerContentHeight = -1;
 
       // the reason for handling these classes this way is for performance
       // limit the watchers on panels etc
@@ -90,6 +92,20 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
 
       function panelHeightUpdated() {
         panelContent.css({ height: ctrl.height + 'px' });
+        if (ctrl.panel.dynamicHeight) {
+          panelInnerContentHeight = -1; // force checking
+          checkInnerContentHeight();
+        }
+      }
+
+      function checkInnerContentHeight() {
+        if (ctrl.panel.dynamicHeight && panelInnerContent) {
+          const v = panelInnerContent.outerHeight(true);
+          if (v !== panelInnerContentHeight) {
+            panelInnerContentHeight = v;
+            ctrl.dynamicHeightChanged(panelInnerContentHeight);
+          }
+        }
       }
 
       function resizeScrollableContent() {
@@ -123,20 +139,13 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
             $(scroller).wrap('<div class="panel-height-helper"></div>');
             scroller = panelContent.find(':first');
 
-            const wrapper = $(scroller).find(':first');
-            wrapper.removeClass('panel-height-helper');
-            wrapper.css('border', '1px solid #FF0');
-            wrapper.css('margin-right', '20px');
-            let height = -1;
+            panelInnerContent = $(scroller).find(':first');
+            panelInnerContent.removeClass('panel-height-helper');
+            panelInnerContent.css('margin-right', '20px');
+            //panelInnerContent.css('border', '1px solid #FF0');
 
             // tslint:disable-next-line
-            new ResizeSensor(wrapper, () => {
-              const v = wrapper.outerHeight(true);
-              if (v !== height) {
-                height = v;
-                ctrl.dynamicHeightChanged(height);
-              }
-            });
+            new ResizeSensor(panelInnerContent, checkInnerContentHeight);
           }
 
           scrollRoot.addClass(scrollRootClass);

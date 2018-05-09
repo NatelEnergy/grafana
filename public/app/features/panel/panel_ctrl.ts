@@ -79,9 +79,9 @@ export class PanelCtrl {
     if (this.panel.dynamicHeightMAX && height > this.panel.dynamicHeightMAX) {
       height = this.panel.dynamicHeightMAX;
     }
-    const h = Math.ceil(height / (GRID_CELL_HEIGHT + GRID_CELL_VMARGIN)) + 1;
+    const h = Math.ceil((height + 5) / (GRID_CELL_HEIGHT + GRID_CELL_VMARGIN)) + 1;
     if (h !== this.panel.gridPos.h) {
-      console.log('Dynamic Height Changed', this.height, height, h, this.panel.gridPos.h, this);
+      //console.log('Dynamic Height Changed', height, 'new:', h, 'old', this.panel.gridPos.h);
       this.panel.gridPos.h = h;
       this.events.emit('panel-size-changed');
       this.dashboard.events.emit('row-expanded'); // triggers grid re-layout
