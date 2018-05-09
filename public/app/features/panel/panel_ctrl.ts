@@ -69,13 +69,9 @@ export class PanelCtrl {
   }
 
   renderingCompleted() {
-    console.log('renderingCompleted', this.wrapper);
     if (this.panel.dynamicHeight && this.wrapper) {
       this.$timeout(() => {
         let height = $(this.wrapper).outerHeight(true);
-
-        console.log('Check height Changed', height);
-
         if (height > 10) {
           const min = this.panel.dynamicHeightMIN || 50;
           if (height < min) {
