@@ -2,6 +2,7 @@ import angular from 'angular';
 import $ from 'jquery';
 import Drop from 'tether-drop';
 import baron from 'baron';
+import ResizeSensor from 'css-element-queries/src/ResizeSensor.js';
 
 var module = angular.module('grafana.directives');
 
@@ -117,12 +118,25 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
           let scrollRoot = panelContent;
           let scroller = panelContent.find(':first');
 
-          // Save the wrapper div to check content height after render
+          // Add a div under the scroller and watch for changes
           if (ctrl.panel.dynamicHeight) {
             $(scroller).wrap('<div class="panel-height-helper"></div>');
             scroller = panelContent.find(':first');
-            ctrl.wrapper = $(scroller).find(':first');
-            $(ctrl.wrapper).removeClass('panel-height-helper');
+
+            const wrapper = $(scroller).find(':first');
+            wrapper.removeClass('panel-height-helper');
+            wrapper.css('border', '1px solid #FF0');
+            wrapper.css('margin-right', '20px');
+            let height = -1;
+
+            // tslint:disable-next-line
+            new ResizeSensor(wrapper, () => {
+              const v = wrapper.outerHeight(true);
+              if (v !== height) {
+                height = v;
+                ctrl.dynamicHeightChanged(height);
+              }
+            });
           }
 
           scrollRoot.addClass(scrollRootClass);
