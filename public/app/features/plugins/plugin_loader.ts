@@ -48,12 +48,48 @@ System.config({
 });
 
 // add cache busting
-var systemLocate = System.locate;
-System.cacheBust = '?bust=' + Date.now();
-System.locate = function(load) {
-  var System = this;
-  return Promise.resolve(systemLocate.call(this, load)).then(function(address) {
-    return address + System.cacheBust;
+// Hacky solution for SystemJS 0.20 from:
+// https://github.com/systemjs/systemjs/issues/1616#issuecomment-289268010
+// SystemJSLoader$1 -> RegisterLoader$1 -> Loader
+var Loader = System.__proto__.__proto__.__proto__.constructor;
+var loaderResolve = Loader.prototype.resolve;
+var metadataSymbol;
+function getMetadataSymbol(loader, mustFindKey) {
+  if (metadataSymbol) {
+    return metadataSymbol;
+  }
+  if (loader['@@metadata']) {
+    //some browsers dont support Symbol()
+    return (metadataSymbol = '@@metadata');
+  }
+  var symbols = Object.getOwnPropertySymbols(loader);
+  for (var i = 0; i < symbols.length; i++) {
+    var s = symbols[i],
+      lov = loader[s];
+    if (lov && typeof lov === 'object' && lov[mustFindKey]) {
+      return (metadataSymbol = s);
+    }
+  }
+  throw new Error('I tried: ' + mustFindKey);
+}
+
+const cacheBust = '?bust=' + Date.now();
+Loader.prototype.resolve = function hackedLoaderResolve() {
+  const loader = this;
+  return Promise.resolve(loaderResolve.apply(loader, arguments)).then(function(key) {
+    // Only manipulate external plugins
+    if (key.indexOf('public/plugins/') > 0) {
+      const newKey = key + cacheBust;
+      const metaSymbol = getMetadataSymbol(loader, key);
+      const metadata = loader[metaSymbol];
+      const moveMe = metadata[key];
+      if (moveMe) {
+        delete metadata[key];
+        metadata[newKey] = moveMe;
+      }
+      key = newKey;
+    }
+    return key;
   });
 };
 
