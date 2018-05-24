@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"golang.org/x/sync/errgroup"
 
 	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/components/imguploader"
-	"github.com/grafana/grafana/pkg/components/renderer"
 	"github.com/grafana/grafana/pkg/log"
 	"github.com/grafana/grafana/pkg/metrics"
+	"github.com/grafana/grafana/pkg/services/rendering"
 
 	m "github.com/grafana/grafana/pkg/models"
 )
@@ -28,18 +29,16 @@ type NotificationService interface {
 	SendIfNeeded(context *EvalContext) error
 }
 
-func NewNotificationService() NotificationService {
-	return newNotificationService()
+func NewNotificationService(renderService rendering.Service) NotificationService {
+	return &notificationService{
+		log:           log.New("alerting.notifier"),
+		renderService: renderService,
+	}
 }
 
 type notificationService struct {
-	log log.Logger
-}
-
-func newNotificationService() *notificationService {
-	return &notificationService{
-		log: log.New("alerting.notifier"),
-	}
+	log           log.Logger
+	renderService rendering.Service
 }
 
 func (n *notificationService) SendIfNeeded(context *EvalContext) error {
@@ -80,18 +79,19 @@ func (n *notificationService) uploadImage(context *EvalContext) (err error) {
 		return err
 	}
 
-	renderOpts := &renderer.RenderOpts{
-		Width:          "800",
-		Height:         "400",
-		Timeout:        "30",
-		OrgId:          context.Rule.OrgId,
-		IsAlertContext: true,
+	renderOpts := rendering.Opts{
+		Width:   1000,
+		Height:  500,
+		Timeout: time.Second * 30,
+		OrgId:   context.Rule.OrgId,
+		OrgRole: m.ROLE_ADMIN,
 	}
 
 	ref, err := context.GetDashboardUID()
 	if err != nil {
 		return err
 	}
+
 	renderOpts.Path = fmt.Sprintf("d-solo/%s/%s?panelId=%d", ref.Uid, ref.Slug, context.Rule.PanelId)
 
 	if strings.HasPrefix(context.Rule.Message, "RENDER:") {
@@ -103,8 +103,8 @@ func (n *notificationService) uploadImage(context *EvalContext) (err error) {
 	if err != nil {
 		return err
 	}
-	context.ImageOnDiskPath = imagePath
 
+	context.ImageOnDiskPath = result.FilePath
 	context.ImagePublicUrl, err = uploader.Upload(context.Ctx, context.ImageOnDiskPath)
 	if err != nil {
 		return err
