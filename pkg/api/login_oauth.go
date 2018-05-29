@@ -89,6 +89,7 @@ func OAuthLogin(ctx *m.ReqContext) {
 
 	// handle call back
 	tr := &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: setting.OAuthService.OAuthInfos[name].TlsSkipVerify,
 		},
