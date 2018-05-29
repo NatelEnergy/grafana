@@ -27,6 +27,13 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/combineAll';
 
+// add cache busting
+const bust = `?_cache=${Date.now()}`;
+function locate(load) {
+  return load.address + bust;
+}
+System.registry.set('plugin-loader', System.newModule({ locate: locate }));
+
 System.config({
   baseURL: 'public',
   defaultExtension: 'js',
@@ -40,58 +47,13 @@ System.config({
     css: 'vendor/plugin-css/css.js',
   },
   meta: {
-    '*': {
+    'plugin*': {
       esModule: true,
       authorization: true,
+      loader: 'plugin-loader',
     },
   },
 });
-
-// add cache busting
-// Hacky solution for SystemJS 0.20 from:
-// https://github.com/systemjs/systemjs/issues/1616#issuecomment-289268010
-// SystemJSLoader$1 -> RegisterLoader$1 -> Loader
-var Loader = System.__proto__.__proto__.__proto__.constructor;
-var loaderResolve = Loader.prototype.resolve;
-var metadataSymbol;
-function getMetadataSymbol(loader, mustFindKey) {
-  if (metadataSymbol) {
-    return metadataSymbol;
-  }
-  if (loader['@@metadata']) {
-    //some browsers dont support Symbol()
-    return (metadataSymbol = '@@metadata');
-  }
-  var symbols = Object.getOwnPropertySymbols(loader);
-  for (var i = 0; i < symbols.length; i++) {
-    var s = symbols[i],
-      lov = loader[s];
-    if (lov && typeof lov === 'object' && lov[mustFindKey]) {
-      return (metadataSymbol = s);
-    }
-  }
-  throw new Error('I tried: ' + mustFindKey);
-}
-
-const cacheBust = '?bust=' + Date.now();
-Loader.prototype.resolve = function hackedLoaderResolve() {
-  const loader = this;
-  return Promise.resolve(loaderResolve.apply(loader, arguments)).then(function(key) {
-    // Only manipulate external plugins
-    if (key.indexOf('public/plugins/') > 0) {
-      const newKey = key + cacheBust;
-      const metaSymbol = getMetadataSymbol(loader, key);
-      const metadata = loader[metaSymbol];
-      const moveMe = metadata[key];
-      if (moveMe) {
-        delete metadata[key];
-        metadata[newKey] = moveMe;
-      }
-      key = newKey;
-    }
-    return key;
-  });
-};
 
 function exposeToPlugin(name: string, component: any) {
   System.registerDynamic(name, [], true, function(require, exports, module) {
@@ -169,9 +131,7 @@ export function importPluginModule(path: string): Promise<any> {
   if (builtIn) {
     return Promise.resolve(builtIn);
   }
-
-  // Make sure the path does not have a backslash in it
-  return System.import(path.replace('\\', '/'));
+  return System.import(path);
 }
 
 export function loadPluginCss(options) {
