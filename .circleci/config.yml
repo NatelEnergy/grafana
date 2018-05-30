@@ -111,7 +111,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - dist/grafana*
+            - dist/natel*
             - scripts/*.sh
             - scripts/publish
       - store_artifacts:
