@@ -63,7 +63,6 @@ class SingleStatCtrl extends MetricsPanelCtrl {
     sparkline: {
       show: false,
       full: false,
-      fullRange: false,
       lineColor: 'rgb(31, 120, 193)',
       fillColor: 'rgba(31, 118, 189, 0.18)',
     },
@@ -319,7 +318,6 @@ class SingleStatCtrl extends MetricsPanelCtrl {
         data.valueFormatted = formatFunc(data.value, decimalInfo.decimals, decimalInfo.scaledDecimals);
         data.valueRounded = kbn.roundValue(data.value, decimalInfo.decimals);
       }
-      data.stats = this.series[0].stats;
 
       // Add $__name variable for using in prefix or postfix
       data.scopedVars = _.extend({}, this.panel.scopedVars);
@@ -576,7 +574,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
 
       plotCanvas.css(plotCss);
 
-      var options: any = {
+      var options = {
         legend: { show: false },
         series: {
           lines: {
@@ -597,13 +595,6 @@ class SingleStatCtrl extends MetricsPanelCtrl {
         grid: { hoverable: false, show: false },
       };
 
-      if (panel.sparkline.fullRange && data.stats) {
-        options.yaxis = {
-          show: false,
-          min: data.stats.min,
-          max: data.stats.max,
-        };
-      }
       elem.append(plotCanvas);
 
       var plotSeries = {
