@@ -99,7 +99,7 @@ func (n *notificationService) uploadImage(context *EvalContext) (err error) {
 	}
 	n.log.Info("alert-rendering", "path", renderOpts.Path)
 
-	imagePath, err := renderer.RenderToPng(renderOpts)
+	result, err := n.renderService.Render(context.Ctx, renderOpts)
 	if err != nil {
 		return err
 	}
