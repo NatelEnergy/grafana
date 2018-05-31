@@ -150,7 +150,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - dist/grafana*
+            - dist/natel*
             - scripts/*.sh
             - scripts/publish
       - store_artifacts:
@@ -179,8 +179,14 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: install awscli
-          command: 'sudo pip install awscli'
+          name: list dist files
+          command: 'ls -l ./dist'
+      - store_artifacts:
+          path: ./dist
+          
+#      - run:
+#          name: install awscli
+#          command: 'sudo pip install awscli'
 #      - run:
 #          name: deploy to s3
 #          command: 'aws s3 sync ./dist s3://$BUCKET_NAME/master'
