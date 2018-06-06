@@ -150,7 +150,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - dist/natel*
+            - dist/*_amd64.deb*
+            - dist/*.windows-amd64.zip*
             - scripts/*.sh
             - scripts/publish
       - store_artifacts:
@@ -183,7 +184,7 @@ jobs:
           command: 'ls -l ./dist'
       - store_artifacts:
           path: ./dist
-          
+
 #      - run:
 #          name: install awscli
 #          command: 'sudo pip install awscli'
