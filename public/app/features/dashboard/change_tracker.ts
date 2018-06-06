@@ -125,12 +125,13 @@ export class ChangeTracker {
         delete panel.legend.sortDesc;
       }
 
-      // ignore all h parameters after a dynamic height
+      // ignore all y parameters after a dynamic height (they may be pushed up/down)
       if (panel.dynamicHeight) {
         hasDynamicHeight = true;
+        delete panel.gridPos.h;
       }
       if (hasDynamicHeight) {
-        delete panel.gridPos.h;
+        delete panel.gridPos.y;
       }
 
       return true;
@@ -157,9 +158,8 @@ export class ChangeTracker {
       currentTimepicker.now = originalTimepicker.now;
     }
 
-    var currentJson = angular.toJson(current, true);
-    var originalJson = angular.toJson(original, true);
-
+    const currentJson = angular.toJson(current, true);
+    const originalJson = angular.toJson(original, true);
     return currentJson !== originalJson;
   }
 
