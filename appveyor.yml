@@ -21,11 +21,8 @@ install:
   # install gcc (needed for sqlite3)
   - choco install -y --limit-output mingw
   - set PATH=C:\tools\mingw64\bin;%PATH%
-  - set PATH=C:\Ruby22\bin;%PATH%
   - echo %PATH%
   - echo %GOPATH%
-  - gem -v
-  - gem install premailer
   - go version
   - go env
   # - go run build.go setup
@@ -38,6 +35,6 @@ build_script:
   - go test -v ./pkg/...
 
 artifacts:
-  - path: natel-grafana-*windows-*.*
+  - path: grafana-*windows-*.*
     name: binzip
     type: zip
