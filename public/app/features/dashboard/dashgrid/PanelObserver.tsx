@@ -29,6 +29,8 @@ export class PanelObserverScroll implements PanelObserver {
     this.updateScrollListenerCallback(true);
   }
 
+  checkAfterAdd = false;
+
   // this may be called a couple times as
   watch(e: HTMLElement, panel: PanelModel) {
     if (e && panel) {
@@ -41,6 +43,15 @@ export class PanelObserverScroll implements PanelObserver {
       this.scroller = x;
       this.registry.set(panel, e);
       this.updateScrollListenerCallback();
+
+      // Check after each add
+      this.checkAfterAdd = true;
+      setTimeout(() => {
+        if (this.checkAfterAdd) {
+          this.checkAfterAdd = false;
+          this.updateVisibility(true);
+        }
+      }, 50);
     }
   }
 
