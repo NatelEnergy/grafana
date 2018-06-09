@@ -13,6 +13,7 @@ const notPersistedProperties: { [str: string]: boolean } = {
   events: true,
   fullscreen: true,
   isEditing: true,
+  visible: true,
 };
 
 export class PanelModel {
@@ -36,6 +37,7 @@ export class PanelModel {
   fullscreen: boolean;
   isEditing: boolean;
   events: Emitter;
+  visible: boolean;
 
   constructor(model) {
     this.events = new Emitter();
