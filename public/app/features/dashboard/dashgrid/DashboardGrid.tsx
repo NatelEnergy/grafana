@@ -5,6 +5,7 @@ import { DashboardPanel } from './DashboardPanel';
 import { DashboardModel } from '../dashboard_model';
 import { PanelContainer } from './PanelContainer';
 import { PanelModel } from '../panel_model';
+import { PanelObserver, PanelObserverScroll, PanelObserverIntersection } from './PanelObserver';
 import classNames from 'classnames';
 import sizeMe from 'react-sizeme';
 
@@ -68,6 +69,7 @@ export class DashboardGrid extends React.Component<DashboardGridProps, any> {
   panelContainer: PanelContainer;
   dashboard: DashboardModel;
   panelMap: { [id: string]: PanelModel };
+  observer: PanelObserver;
 
   constructor(props) {
     super(props);
@@ -79,6 +81,10 @@ export class DashboardGrid extends React.Component<DashboardGridProps, any> {
     this.onWidthChange = this.onWidthChange.bind(this);
 
     this.state = { animated: false };
+    this.observer = new PanelObserverScroll();
+    let tmp = new PanelObserverIntersection();
+    tmp.dispose(); // just here to keep circleci happy
+    //this.observer = new PanelObserverIntersection();
 
     // subscribe to dashboard events
     this.dashboard = this.panelContainer.getDashboard();
@@ -148,6 +154,9 @@ export class DashboardGrid extends React.Component<DashboardGridProps, any> {
     // react-grid-layout has a bug (#670), and onLayoutChange() is only called when the component is mounted.
     // So it's required to call it explicitly when panel resized or moved to save layout changes.
     this.onLayoutChange(layout);
+
+    // Check all panels
+    this.observer.check();
   }
 
   onResize(layout, oldItem, newItem) {
@@ -157,6 +166,7 @@ export class DashboardGrid extends React.Component<DashboardGridProps, any> {
   onResizeStop(layout, oldItem, newItem) {
     this.updateGridPos(newItem, layout);
     this.panelMap[newItem.i].resizeDone();
+    this.observer.check();
   }
 
   onDragStop(layout, oldItem, newItem) {
@@ -171,13 +181,17 @@ export class DashboardGrid extends React.Component<DashboardGridProps, any> {
     });
   }
 
+  componentWillUnmount() {
+    this.observer.dispose();
+  }
+
   renderPanels() {
     const panelElements = [];
 
     for (let panel of this.dashboard.panels) {
       const panelClasses = classNames({ panel: true, 'panel--fullscreen': panel.fullscreen });
       panelElements.push(
-        <div key={panel.id.toString()} className={panelClasses}>
+        <div key={panel.id.toString()} ref={e => this.observer.watch(e, panel)} className={panelClasses}>
           <DashboardPanel panel={panel} getPanelContainer={this.props.getPanelContainer} />
         </div>
       );
