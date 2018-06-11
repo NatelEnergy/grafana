@@ -6,19 +6,18 @@ export const PANEL_VISIBILITY_CHANGED_EVENT = 'panel-visibility-changed';
 
 export interface PanelObserver {
   dispose: () => void;
-  watch: (e: any, panel: PanelModel) => void;
+  watch: (e: HTMLElement, panel: PanelModel) => void;
   check: () => void;
 }
 
 export class PanelObserverScroll implements PanelObserver {
-  private registry = new Map<PanelModel, any>();
+  private registry = new Map<PanelModel, HTMLElement>();
   private lastChecked = -1;
-  private scroller: any;
-  private listener: any = null;
+  private scroller: HTMLElement;
+  private listener: EventListenerOrEventListenerObject = null;
+  private checkPending = false;
 
   static readonly MARGIN: number = 200; // Say something it visible if it is close to the window
-
-  constructor() {}
 
   //---------------------------------------------------------
   // API
@@ -28,8 +27,6 @@ export class PanelObserverScroll implements PanelObserver {
     this.registry.clear();
     this.updateScrollListenerCallback(true);
   }
-
-  checkAfterAdd = false;
 
   // this may be called a couple times as
   watch(e: HTMLElement, panel: PanelModel) {
@@ -44,14 +41,20 @@ export class PanelObserverScroll implements PanelObserver {
       this.registry.set(panel, e);
       this.updateScrollListenerCallback();
 
-      // Check after each add
-      this.checkAfterAdd = true;
+      this.checkPending = true;
       setTimeout(() => {
-        if (this.checkAfterAdd) {
-          this.checkAfterAdd = false;
+        if (this.checkPending) {
+          this.checkPending = true;
+
+          // Remove any stale elements from the DOM
+          this.registry.forEach((elem, panel) => {
+            if (!document.body.contains(elem)) {
+              this.registry.delete(panel);
+            }
+          });
           this.updateVisibility(true);
         }
-      }, 50);
+      }, 10);
     }
   }
 
@@ -115,7 +118,7 @@ export class PanelObserverScroll implements PanelObserver {
     if (_.isEmpty(this.registry)) {
       this.updateScrollListenerCallback(true);
     } else if (this.scroller) {
-      const top = Math.floor(this.scroller.scrollTop / 25) * 25; // check every 25 pixels
+      const top = Math.floor(this.scroller.scrollTop / 10) * 10; // check every 10 pixels
       if (top !== this.lastChecked || force === true) {
         this.lastChecked = top;
         this.updateVisibilityProps(
