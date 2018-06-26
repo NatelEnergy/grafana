@@ -22,7 +22,7 @@ export class DashboardPanel extends React.Component<DashboardPanelProps, Dashboa
   constructor(props) {
     super(props);
     this.state = {
-      lazyLoading: true,
+      lazyLoading: false,
     };
   }
 
