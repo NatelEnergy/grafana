@@ -70,7 +70,8 @@ class MetricsPanelCtrl extends PanelCtrl {
 
   private onPanelVisibilityChanged(vis) {
     if (this.refreshWhenVisible) {
-      this.refresh();
+      console.log('Issue delayed refresh', this.panel.id, this.panel.title);
+      this.onMetricsPanelRefresh();
       this.refreshWhenVisible = false;
     }
   }
@@ -82,7 +83,7 @@ class MetricsPanelCtrl extends PanelCtrl {
     }
 
     // Delay refresh until the panel is visible
-    if (this.panel.visible === false) {
+    if (this.panel.visible === false && !this.panel.fullscreen) {
       this.refreshWhenVisible = true;
       return;
     }
