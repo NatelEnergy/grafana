@@ -166,6 +166,8 @@ jobs:
             - dist/*.windows-amd64.zip*
             - scripts/*.sh
             - scripts/publish
+      - store_artifacts:
+          path: dist
 
   build:
     docker:
@@ -197,10 +199,10 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - setup_remote_docker
-      - run: docker info
-      - run: cp dist/grafana-latest.linux-x64.tar.gz packaging/docker
-      - run: cd packaging/docker && ./build-deploy.sh "master-${CIRCLE_SHA1}"
+      # - setup_remote_docker
+      # - run: docker info
+      # - run: cp dist/grafana-latest.linux-x64.tar.gz packaging/docker
+      # - run: cd packaging/docker && ./build-deploy.sh "master-${CIRCLE_SHA1}"
 
   grafana-docker-pr:
     docker:
@@ -232,6 +234,8 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - store_artifacts:
+          path: dist
 
   deploy-release:
     docker:
