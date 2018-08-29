@@ -287,17 +287,6 @@ workflows:
             - mysql-integration-test
             - postgres-integration-test
           filters: *filter-only-master
-      - deploy-enterprise-master:
-          requires:
-            - build-all
-            - test-backend
-            - test-frontend
-            - codespell
-            - gometalinter
-            - mysql-integration-test
-            - postgres-integration-test
-            - build-enterprise
-          filters: *filter-only-master
 
   release:
     jobs:
