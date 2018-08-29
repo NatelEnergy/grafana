@@ -115,7 +115,7 @@ export class SettingsCtrl {
     const params = this.$location.search();
     const url = this.$location.path();
 
-    for (let section of this.sections) {
+    for (const section of this.sections) {
       const sectionParams = _.defaults({ editview: section.id }, params);
       section.url = config.appSubUrl + url + '?' + $.param(sectionParams);
     }
@@ -162,7 +162,7 @@ export class SettingsCtrl {
   }
 
   hideSettings() {
-    var urlParams = this.$location.search();
+    const urlParams = this.$location.search();
     delete urlParams.editview;
     setTimeout(() => {
       this.$rootScope.$apply(() => {
