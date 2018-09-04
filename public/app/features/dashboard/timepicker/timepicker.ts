@@ -61,9 +61,6 @@ export class TimePickerCtrl {
       this.isUtc = true;
     }
 
-    var diff = time.to.diff(time.from);
-    var duration = moment.duration(diff);
-
     this.rangeString = rangeUtil.describeTimeRange(timeRaw);
     this.absolute = { fromJs: time.from.toDate(), toJs: time.to.toDate() };
     this.tooltip = this.dashboard.formatDate(time.from) + ' <br>to<br>';
@@ -71,14 +68,16 @@ export class TimePickerCtrl {
     this.timeRaw = timeRaw;
     this.isAbsolute = moment.isMoment(this.timeRaw.to);
 
-    var days = duration.asDays();
+    const diff = time.to.diff(time.from);
+    const duration = moment.duration(diff);
+    const days = duration.asDays();
     if (days > 10) {
       this.tooltip += '<br/><br/>' + duration.humanize();
     } else {
       var lines = 0;
-      var h = duration.hours();
-      var m = duration.minutes();
-      var s = duration.seconds();
+      const h = duration.hours();
+      const m = duration.minutes();
+      const s = duration.seconds();
       this.tooltip += '<br/>';
 
       if (days > 1) {
