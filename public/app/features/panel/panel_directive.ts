@@ -131,7 +131,7 @@ module.directive('grafanaPanel', function($rootScope, $document, $timeout) {
             </div>
           `;
 
-          let scrollRoot = panelContent;
+          const scrollRoot = panelContent;
           let scroller = panelContent.find(':first');
 
           // Add a div under the scroller and watch for changes

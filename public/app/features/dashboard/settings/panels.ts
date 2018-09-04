@@ -124,7 +124,7 @@ export class DashPanelsEditorCtrl {
       return;
     }
 
-    let urlParams = this.$location.search();
+    const urlParams = this.$location.search();
     delete urlParams.fullscreen;
     delete urlParams.panelId;
     delete urlParams.edit;
