@@ -23,13 +23,13 @@ export class DashPanelsEditorCtrl {
   }
 
   updateStats() {
-    let stats = {
+    const stats = {
       alerts: 0,
       sources: [],
       descriptions: 0,
       skip: {}, // id = true
     };
-    let sources = {};
+    const sources = {};
 
     _.forEach(this.dashboard.panels, panel => {
       if (panel.alert) {
@@ -63,9 +63,9 @@ export class DashPanelsEditorCtrl {
 
   getIconFor(panel) {
     if (panel) {
-      let meta = config.panels[panel.type];
+      const meta = config.panels[panel.type];
       if (_.has(meta, 'info.logos')) {
-        let logos = meta.info.logos;
+        const logos = meta.info.logos;
         if (logos.small != null) {
           return logos.small;
         }
@@ -95,7 +95,7 @@ export class DashPanelsEditorCtrl {
   removePanel(panel, ask?: boolean) {
     // confirm deletion
     if (ask !== false) {
-      var text2, confirmText;
+      let text2, confirmText;
 
       if (panel.alert) {
         text2 = 'Panel includes an alert rule, removing panel will also remove alert rule';
@@ -147,7 +147,7 @@ export class DashPanelsEditorCtrl {
   // Copiedfrom panel_ctrl... can we use the same one?
   editPanelJson(panel) {
     console.log('json', panel, this);
-    let editScope = this.$scope.$root.$new();
+    const editScope = this.$scope.$root.$new();
     editScope.object = panel.getSaveModel();
     //   editScope.updateHandler = pctrl.bind(this);
     this.$scope.$root.appEvent('show-modal', {

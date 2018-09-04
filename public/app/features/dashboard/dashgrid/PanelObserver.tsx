@@ -49,6 +49,7 @@ export class PanelObserverIntersection implements PanelObserver {
     // Fast scrolling can send multiple callbacks quickly
     // !intersecting => intersecting => !intersecting in one callback.
     let visible = new Map<PanelModel, boolean>();
+    const visible = new Map<PanelModel, boolean>();
     entries.forEach(entry => {
       const panel = entry.target['data-garfana-panel'];
       if (panel.visible !== entry.isIntersecting) {
