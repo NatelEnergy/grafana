@@ -350,7 +350,7 @@ func getEdition() string {
 	}
 }
 
-func sendUsageStats() {
+func sendUsageStats(oauthProviders map[string]bool) {
 	if !setting.ReportingEnabled {
 		return
 	}
@@ -438,6 +438,34 @@ func sendUsageStats() {
 
 	for access, count := range dsAccessOtherCount {
 		metrics["stats.ds_access.other."+access+".count"] = count
+	}
+
+	anStats := models.GetAlertNotifierUsageStatsQuery{}
+	if err := bus.Dispatch(&anStats); err != nil {
+		metricsLogger.Error("Failed to get alert notification stats", "error", err)
+		return
+	}
+
+	for _, stats := range anStats.Result {
+		metrics["stats.alert_notifiers."+stats.Type+".count"] = stats.Count
+	}
+
+	authTypes := map[string]bool{}
+	authTypes["anonymous"] = setting.AnonymousEnabled
+	authTypes["basic_auth"] = setting.BasicAuthEnabled
+	authTypes["ldap"] = setting.LdapEnabled
+	authTypes["auth_proxy"] = setting.AuthProxyEnabled
+
+	for provider, enabled := range oauthProviders {
+		authTypes["oauth_"+provider] = enabled
+	}
+
+	for authType, enabled := range authTypes {
+		enabledValue := 0
+		if enabled {
+			enabledValue = 1
+		}
+		metrics["stats.auth_enabled."+authType+".count"] = enabledValue
 	}
 
 	out, _ := json.MarshalIndent(report, "", " ")

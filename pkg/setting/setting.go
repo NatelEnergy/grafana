@@ -164,8 +164,10 @@ var (
 	Quota QuotaSettings
 
 	// Alerting
-	AlertingEnabled bool
-	ExecuteAlerts   bool
+	AlertingEnabled            bool
+	ExecuteAlerts              bool
+	AlertingErrorOrTimeout     string
+	AlertingNoDataOrNullValues string
 
 	// Explore UI
 	ExploreEnabled bool
@@ -201,6 +203,8 @@ type Cfg struct {
 	DisableBruteForceLoginProtection bool
 
 	TempDataLifetime time.Duration
+
+	MetricsEndpointEnabled bool
 }
 
 type CommandLineArgs struct {
@@ -657,6 +661,7 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	cfg.ImagesDir = filepath.Join(DataPath, "png")
 	cfg.PhantomDir = filepath.Join(HomePath, "tools/phantomjs")
 	cfg.TempDataLifetime = iniFile.Section("paths").Key("temp_data_lifetime").MustDuration(time.Second * 3600 * 24)
+	cfg.MetricsEndpointEnabled = iniFile.Section("metrics").Key("enabled").MustBool(true)
 
 	analytics := iniFile.Section("analytics")
 	ReportingEnabled = analytics.Key("reporting_enabled").MustBool(true)
@@ -672,6 +677,8 @@ func (cfg *Cfg) Load(args *CommandLineArgs) error {
 	alerting := iniFile.Section("alerting")
 	AlertingEnabled = alerting.Key("enabled").MustBool(true)
 	ExecuteAlerts = alerting.Key("execute_alerts").MustBool(true)
+	AlertingErrorOrTimeout = alerting.Key("error_or_timeout").MustString("alerting")
+	AlertingNoDataOrNullValues = alerting.Key("nodata_or_nullvalues").MustString("no_data")
 
 	explore := iniFile.Section("explore")
 	ExploreEnabled = explore.Key("enabled").MustBool(false)
