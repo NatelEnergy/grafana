@@ -46,10 +46,14 @@ func (e *Error) Error() string {
 	return e.s
 }
 
+const (
+	grafanaCom = "grafana_com"
+)
+
 var (
 	SocialBaseUrl = "/login/"
 	SocialMap     = make(map[string]SocialConnector)
-	allOauthes    = []string{"github", "gitlab", "google", "generic_oauth", "grafananet", "grafana_com"}
+	allOauthes    = []string{"github", "gitlab", "google", "generic_oauth", "grafananet", grafanaCom}
 )
 
 func NewOAuthService() {
@@ -83,7 +87,7 @@ func NewOAuthService() {
 		}
 
 		if name == "grafananet" {
-			name = "grafana_com"
+			name = grafanaCom
 		}
 
 		setting.OAuthService.OAuthInfos[name] = info
@@ -160,7 +164,7 @@ func NewOAuthService() {
 			}
 		}
 
-		if name == "grafana_com" {
+		if name == grafanaCom {
 			config = oauth2.Config{
 				ClientID:     info.ClientId,
 				ClientSecret: info.ClientSecret,
@@ -171,7 +175,7 @@ func NewOAuthService() {
 				Scopes: info.Scopes,
 			}
 
-			SocialMap["grafana_com"] = &SocialGrafanaCom{
+			SocialMap[grafanaCom] = &SocialGrafanaCom{
 				SocialBase: &SocialBase{
 					Config: &config,
 					log:    logger,
@@ -198,7 +202,7 @@ var GetOAuthProviders = func(cfg *setting.Cfg) map[string]bool {
 
 	for _, name := range allOauthes {
 		if name == "grafananet" {
-			name = "grafana_com"
+			name = grafanaCom
 		}
 
 		sec := cfg.Raw.Section("auth." + name)

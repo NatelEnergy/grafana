@@ -12,6 +12,7 @@ import (
 	"github.com/grafana/grafana/pkg/log"
 	"github.com/grafana/grafana/pkg/metrics"
 	"github.com/grafana/grafana/pkg/services/rendering"
+	"github.com/grafana/grafana/pkg/setting"
 
 	m "github.com/grafana/grafana/pkg/models"
 )
@@ -68,7 +69,7 @@ func (n *notificationService) sendNotifications(evalContext *EvalContext, notifi
 
 			// Verify that we can send the notification again
 			// but this time within the same transaction.
-			if !evalContext.IsTestRun && !not.ShouldNotify(context.Background(), evalContext) {
+			if !evalContext.IsTestRun && !not.ShouldNotify(ctx, evalContext) {
 				return nil
 			}
 
@@ -109,11 +110,12 @@ func (n *notificationService) uploadImage(context *EvalContext) (err error) {
 	}
 
 	renderOpts := rendering.Opts{
-		Width:   1000,
-		Height:  500,
-		Timeout: alertTimeout / 2,
-		OrgId:   context.Rule.OrgId,
-		OrgRole: m.ROLE_ADMIN,
+		Width:           1000,
+		Height:          500,
+		Timeout:         alertTimeout / 2,
+		OrgId:           context.Rule.OrgId,
+		OrgRole:         m.ROLE_ADMIN,
+		ConcurrentLimit: setting.AlertingRenderLimit,
 	}
 
 	ref, err := context.GetDashboardUID()
