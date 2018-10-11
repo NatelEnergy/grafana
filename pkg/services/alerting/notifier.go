@@ -3,7 +3,6 @@ package alerting
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/grafana/grafana/pkg/bus"
 	"github.com/grafana/grafana/pkg/components/imguploader"
@@ -139,11 +138,6 @@ func (n *notificationService) uploadImage(context *EvalContext) (err error) {
 	}
 
 	renderOpts.Path = fmt.Sprintf("d-solo/%s/%s?panelId=%d", ref.Uid, ref.Slug, context.Rule.PanelId)
-
-	if strings.HasPrefix(context.Rule.Message, "RENDER:") {
-		renderOpts.Path = context.Rule.Message[:len("RENDER:")]
-	}
-	n.log.Info("alert-rendering", "path", renderOpts.Path)
 
 	result, err := n.renderService.Render(context.Ctx, renderOpts)
 	if err != nil {
