@@ -349,20 +349,20 @@ jobs:
       - run:
           name: install awscli
           command: 'sudo pip install awscli'
-      - run:
-          name: deploy to s3
-          command: |
-            # Also
-            cp dist/grafana-latest.linux-x64.tar.gz dist/grafana-master-$(echo "${CIRCLE_SHA1}" | cut -b1-7).linux-x64.tar.gz
-            aws s3 sync ./dist s3://$BUCKET_NAME/master
-      - run:
-          name: Trigger Windows build
-          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} master'
-      - run:
-          name: Publish to Grafana.com
-          command: |
-            rm dist/grafana-master-$(echo "${CIRCLE_SHA1}" | cut -b1-7).linux-x64.tar.gz
-            ./scripts/publish -apiKey ${GRAFANA_COM_API_KEY}
+#      - run:
+#          name: deploy to s3
+#          command: |
+#            # Also
+#            cp dist/grafana-latest.linux-x64.tar.gz dist/grafana-master-$(echo "${CIRCLE_SHA1}" | cut -b1-7).linux-x64.tar.gz
+#            aws s3 sync ./dist s3://$BUCKET_NAME/master
+#      - run:
+#          name: Trigger Windows build
+#          command: './scripts/trigger_windows_build.sh ${APPVEYOR_TOKEN} ${CIRCLE_SHA1} master'
+#      - run:
+#          name: Publish to Grafana.com
+#          command: |
+#            rm dist/grafana-master-$(echo "${CIRCLE_SHA1}" | cut -b1-7).linux-x64.tar.gz
+#            ./scripts/publish -apiKey ${GRAFANA_COM_API_KEY}
 
   deploy-release:
     docker:
