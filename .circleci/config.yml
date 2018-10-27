@@ -210,6 +210,10 @@ jobs:
       - run: docker info
       - run: cp dist/grafana-latest.linux-x64.tar.gz packaging/docker
       - run: cd packaging/docker && ./build-deploy.sh "master-${CIRCLE_SHA1}"
+      - run: rm packaging/docker/grafana-latest.linux-x64.tar.gz
+      - run: cp enterprise-dist/grafana-enterprise-*.linux-amd64.tar.gz packaging/docker/grafana-latest.linux-x64.tar.gz
+      - run: cd packaging/docker && ./build-enterprise.sh "master"
+
 
   grafana-docker-pr:
     docker:
@@ -234,6 +238,9 @@ jobs:
         - run: docker info
         - run: cp dist/grafana-latest.linux-x64.tar.gz packaging/docker
         - run: cd packaging/docker && ./build-deploy.sh "${CIRCLE_TAG}"
+        - run: rm packaging/docker/grafana-latest.linux-x64.tar.gz
+        - run: cp enterprise-dist/grafana-enterprise-*.linux-amd64.tar.gz packaging/docker/grafana-latest.linux-x64.tar.gz
+        - run: cd packaging/docker && ./build-enterprise.sh "${CIRCLE_TAG}"
 
   build-enterprise:
     docker:
@@ -365,7 +372,7 @@ jobs:
 #            ./scripts/publish -apiKey ${GRAFANA_COM_API_KEY}
       - store_artifacts:
           path: dist
-          
+
   deploy-release:
     docker:
       - image: circleci/python:2.7-stretch
@@ -412,27 +419,17 @@ workflows:
             - mysql-integration-test
             - postgres-integration-test
           filters: *filter-only-master
-#      - grafana-docker-master:
-#          requires:
-#            - build-all
-#            - test-backend
-#            - test-frontend
-#            - codespell
-#            - gometalinter
-#            - mysql-integration-test
-#            - postgres-integration-test
-#          filters: *filter-only-master
-#      - deploy-enterprise-master:
-#          requires:
-#            - build-all
-#            - test-backend
-#            - test-frontend
-#            - codespell
-#            - gometalinter
-#            - mysql-integration-test
-#            - postgres-integration-test
-#            - build-all-enterprise
-#          filters: *filter-only-master
+      - grafana-docker-master:
+          requires:
+            - build-all
+            - build-all-enterprise
+            - test-backend
+            - test-frontend
+            - codespell
+            - gometalinter
+            - mysql-integration-test
+            - postgres-integration-test
+          filters: *filter-only-master
 
   release:
     jobs:
