@@ -94,11 +94,9 @@ interface PromQueryFieldProps {
   onClickHintFix?: (action: any) => void;
   onPressEnter?: () => void;
   onQueryChange?: (value: string, override?: boolean) => void;
-  supportsLogs?: boolean; // To be removed after Logging gets its own query field
 }
 
 interface PromQueryFieldState {
-  logLabelOptions: any[];
   metricsOptions: any[];
   metricsByPrefix: CascaderOption[];
   syntaxLoaded: boolean;
@@ -125,7 +123,6 @@ class PromQueryField extends React.PureComponent<PromQueryFieldProps, PromQueryF
     ];
 
     this.state = {
-      logLabelOptions: [],
       metricsByPrefix: [],
       metricsOptions: [],
       syntaxLoaded: false,
@@ -134,26 +131,14 @@ class PromQueryField extends React.PureComponent<PromQueryFieldProps, PromQueryF
 
   componentDidMount() {
     if (this.languageProvider) {
-      this.languageProvider.start().then(() => this.onReceiveMetrics());
+      this.languageProvider
+        .start()
+        .then(remaining => {
+          remaining.map(task => task.then(this.onReceiveMetrics).catch(() => {}));
+        })
+        .then(() => this.onReceiveMetrics());
     }
   }
-
-  onChangeLogLabels = (values: string[], selectedOptions: CascaderOption[]) => {
-    let query;
-    if (selectedOptions.length === 1) {
-      if (selectedOptions[0].children.length === 0) {
-        query = selectedOptions[0].value;
-      } else {
-        // Ignore click on group
-        return;
-      }
-    } else {
-      const key = selectedOptions[0].value;
-      const value = selectedOptions[1].value;
-      query = `{${key}="${value}"}`;
-    }
-    this.onChangeQuery(query, true);
-  };
 
   onChangeMetrics = (values: string[], selectedOptions: CascaderOption[]) => {
     let query;
@@ -206,10 +191,13 @@ class PromQueryField extends React.PureComponent<PromQueryFieldProps, PromQueryF
     // Build metrics tree
     const metricsByPrefix = groupMetricsByPrefix(metrics);
     const histogramOptions = histogramMetrics.map(hm => ({ label: hm, value: hm }));
-    const metricsOptions = [
-      { label: 'Histograms', value: HISTOGRAM_GROUP, children: histogramOptions },
-      ...metricsByPrefix,
-    ];
+    const metricsOptions =
+      histogramMetrics.length > 0
+        ? [
+            { label: 'Histograms', value: HISTOGRAM_GROUP, children: histogramOptions, isLeaf: false },
+            ...metricsByPrefix,
+          ]
+        : metricsByPrefix;
 
     this.setState({ metricsOptions, syntaxLoaded: true });
   };
@@ -239,22 +227,19 @@ class PromQueryField extends React.PureComponent<PromQueryFieldProps, PromQueryF
   };
 
   render() {
-    const { error, hint, initialQuery, supportsLogs } = this.props;
-    const { logLabelOptions, metricsOptions, syntaxLoaded } = this.state;
+    const { error, hint, initialQuery } = this.props;
+    const { metricsOptions, syntaxLoaded } = this.state;
     const cleanText = this.languageProvider ? this.languageProvider.cleanText : undefined;
+    const chooserText = syntaxLoaded ? 'Metrics' : 'Loading matrics...';
 
     return (
       <div className="prom-query-field">
         <div className="prom-query-field-tools">
-          {supportsLogs ? (
-            <Cascader options={logLabelOptions} onChange={this.onChangeLogLabels}>
-              <button className="btn navbar-button navbar-button--tight">Log labels</button>
-            </Cascader>
-          ) : (
-            <Cascader options={metricsOptions} onChange={this.onChangeMetrics}>
-              <button className="btn navbar-button navbar-button--tight">Metrics</button>
-            </Cascader>
-          )}
+          <Cascader options={metricsOptions} onChange={this.onChangeMetrics}>
+            <button className="btn navbar-button navbar-button--tight" disabled={!syntaxLoaded}>
+              {chooserText}
+            </button>
+          </Cascader>
         </div>
         <div className="prom-query-field-wrapper">
           <TypeaheadField
