@@ -33,9 +33,9 @@ export class SettingsCtrl {
 
     this.$scope.$on('$destroy', () => {
       this.dashboard.updateSubmenuVisibility();
-      this.dashboard.startRefresh();
       setTimeout(() => {
         this.$rootScope.appEvent('dash-scroll', { restore: true });
+        this.dashboard.startRefresh();
       });
     });
 
