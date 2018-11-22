@@ -13,6 +13,9 @@ aliases:
   - &filter-only-master
     branches:
       only: master
+  - &filter-never
+    branches:
+      only: masterxxxxxx
 
 version: 2
 
@@ -422,7 +425,7 @@ workflows:
       - build-all:
           filters: *filter-only-master
       - build-all-enterprise:
-          filters: *filter-only-master
+          filters: *filter-never
       - codespell:
           filters: *filter-only-master
       - gometalinter:
@@ -455,7 +458,7 @@ workflows:
             - gometalinter
             - mysql-integration-test
             - postgres-integration-test
-          filters: *filter-only-master
+          filters: *filter-never
       - deploy-enterprise-master:
           requires:
             - build-all
@@ -466,7 +469,7 @@ workflows:
             - mysql-integration-test
             - postgres-integration-test
             - build-all-enterprise
-          filters: *filter-only-master
+          filters: *filter-never
 
   release:
     jobs:
@@ -506,7 +509,7 @@ workflows:
             - gometalinter
             - mysql-integration-test
             - postgres-integration-test
-          filters: *filter-only-release
+          filters: *filter-never
       - grafana-docker-release:
           requires:
             - build-all
@@ -517,7 +520,7 @@ workflows:
             - gometalinter
             - mysql-integration-test
             - postgres-integration-test
-          filters: *filter-only-release
+          filters: *filter-never
 
   build-branches-and-prs:
       jobs:
