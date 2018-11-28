@@ -169,12 +169,6 @@ jobs:
             - scripts/publish
             - scripts/build/release_publisher/release_publisher
             - scripts/build/publish.sh
-      - run:
-          name: Figure out what is here
-          command: 'pwd && ls dist'
-      - store_artifacts:
-          path: /go/src/github.com/grafana/grafana/dist
-          destination: dist
 
   build:
     docker:
@@ -379,7 +373,7 @@ jobs:
           name: Figure out what is here
           command: 'pwd && ls dist'
       - store_artifacts:
-          path: /go/src/github.com/grafana/grafana/dist
+          path: /home/circleci/project/dist
           destination: dist
       - run:
           name: Results in build-all task!
