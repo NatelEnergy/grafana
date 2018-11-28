@@ -170,8 +170,8 @@ jobs:
           name: Figure out what is here
           command: 'pwd && ls dist'
       - store_artifacts:
-          path: /go/src/github.com/grafana/grafana/dist/*
-          destination: xxx
+          path: /go/src/github.com/grafana/grafana/dist
+          destination: dist
 
   build:
     docker:
