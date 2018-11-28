@@ -166,6 +166,9 @@ jobs:
             - scripts/publish
             - scripts/build/release_publisher/release_publisher
             - scripts/build/publish.sh
+      - run:
+          name: Figure out what is here
+          command: 'ls *'
       - store_artifacts:
           path: dist/*
           destination: xxx
