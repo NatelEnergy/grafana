@@ -367,7 +367,9 @@ jobs:
       - attach_workspace:
           at: .
       - store_artifacts:
-          path: ./dist/*
+          path: dist/grafana*
+          destination: prefix
+
 
   deploy-release:
     docker:
