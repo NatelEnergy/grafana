@@ -168,11 +168,9 @@ jobs:
             - scripts/build/publish.sh
       - run:
           name: Figure out what is here
-          command:
-            - 'pwd'
-            - 'ls dist'
+          command: 'pwd && ls dist'
       - store_artifacts:
-          path: dist/*
+          path: /go/src/github.com/grafana/grafana/dist/*
           destination: xxx
 
   build:
