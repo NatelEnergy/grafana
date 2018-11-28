@@ -158,6 +158,9 @@ jobs:
       - run:
           name: Test and build Grafana.com release publisher
           command: 'cd scripts/build/release_publisher && go test . && go build -o release_publisher .'
+      - run:
+          name: Remove latest things
+          command: 'rm dist/*latest*'
       - persist_to_workspace:
           root: .
           paths:
@@ -372,6 +375,12 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Figure out what is here
+          command: 'pwd && ls dist'
+      - store_artifacts:
+          path: /go/src/github.com/grafana/grafana/dist
+          destination: dist
       - run:
           name: Results in build-all task!
           command: 'echo done'
