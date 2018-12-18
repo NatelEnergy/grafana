@@ -7,6 +7,7 @@ import ResizeSensor from 'css-element-queries/src/ResizeSensor.js';
 const module = angular.module('grafana.directives');
 
 const panelTemplate = `
+<<<<<<< HEAD
   <div ng-class="{'panel-editor-container': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
     <div ng-class="{'panel-editor-container__panel': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
       <div class="panel-container">
@@ -28,34 +29,11 @@ const panelTemplate = `
           </div>
         </div>
       </div>
-    </div>
 
-    <div ng-if="ctrl.panel.isEditing" ng-class="{'panel-editor-container__editor': ctrl.panel.isEditing,
-                                                 'panel-height-helper': !ctrl.panel.isEditing}">
-      <div class="tabbed-view tabbed-view--new">
-        <div class="tabbed-view-header">
-          <h3 class="tabbed-view-panel-title">
-            {{ctrl.pluginName}}
-          </h3>
-
-          <ul class="gf-tabs">
-            <li class="gf-tabs-item" ng-repeat="tab in ::ctrl.editorTabs">
-              <a class="gf-tabs-link" ng-click="ctrl.changeTab($index)" ng-class="{active: ctrl.editorTabIndex === $index}">
-                {{::tab.title}}
-              </a>
-            </li>
-          </ul>
-
-          <button class="tabbed-view-close-btn" ng-click="ctrl.exitFullscreen();">
-            <i class="fa fa-remove"></i>
-          </button>
-        </div>
-
-        <div class="tabbed-view-body">
-          <div ng-repeat="tab in ctrl.editorTabs" ng-if="ctrl.editorTabIndex === $index" class="panel-height-helper">
-            <panel-editor-tab editor-tab="tab" ctrl="ctrl" index="$index"></panel-editor-tab>
+      <div class="panel-content">
+          <div class="panel-height-helper">
+            <ng-transclude></ng-transclude>
           </div>
-        </div>
       </div>
     </div>
   </div>
