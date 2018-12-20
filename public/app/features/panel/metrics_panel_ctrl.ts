@@ -32,8 +32,6 @@ class MetricsPanelCtrl extends PanelCtrl {
   constructor($scope, $injector) {
     super($scope, $injector);
 
-    // make metrics tab the default
-    this.editorTabIndex = 1;
     this.$q = $injector.get('$q');
     this.contextSrv = $injector.get('contextSrv');
     this.datasourceSrv = $injector.get('datasourceSrv');
@@ -107,7 +105,7 @@ class MetricsPanelCtrl extends PanelCtrl {
       .then(this.issueQueries.bind(this))
       .then(this.handleQueryResult.bind(this))
       .catch(err => {
-        // if cancelled  keep loading set to true
+        // if canceled  keep loading set to true
         if (err.cancelled) {
           console.log('Panel request cancelled', err);
           return;
