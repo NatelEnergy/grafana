@@ -51,7 +51,6 @@ $path-position: $marker-size-half - ($path-height / 2);
   min-width: $marker-size;
 
   &::after {
-    right: -50%;
     content: '';
     display: block;
     position: absolute;
