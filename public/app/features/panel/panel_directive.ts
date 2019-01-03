@@ -7,35 +7,24 @@ import ResizeSensor from 'css-element-queries/src/ResizeSensor.js';
 const module = angular.module('grafana.directives');
 
 const panelTemplate = `
-  <div ng-class="{'panel-editor-container': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
-    <div ng-class="{'panel-editor-container__panel': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
-      <div class="panel-container">
-        <div class="panel-header" ng-class="{'grid-drag-handle': !ctrl.panel.fullscreen}">
-          <span class="panel-info-corner">
-            <i class="fa"></i>
-            <span class="panel-info-corner-inner"></span>
-          </span>
-
-          <span class="panel-loading" ng-show="ctrl.loading">
-            <i class="fa fa-spinner fa-spin"></i>
-          </span>
-
-          <panel-header class="panel-title-container" panel-ctrl="ctrl"></panel-header>
-        </div>
-        <div class="panel-content">
-          <div class="panel-height-helper">
-            <ng-transclude></ng-transclude>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel-content">
-          <div class="panel-height-helper">
-            <ng-transclude></ng-transclude>
-          </div>
+  <div class="panel-container">
+    <div class="panel-header" ng-class="{'grid-drag-handle': !ctrl.panel.fullscreen}">
+      <span class="panel-info-corner">
+        <i class="fa"></i>
+        <span class="panel-info-corner-inner"></span>
+      </span>
+      <span class="panel-loading" ng-show="ctrl.loading">
+        <i class="fa fa-spinner fa-spin"></i>
+      </span>
+      <panel-header class="panel-title-container" panel-ctrl="ctrl"></panel-header>
+    </div>
+    <div class="panel-content">
+      <div class="panel-height-helper">
+        <ng-transclude></ng-transclude>
       </div>
     </div>
   </div>
+</div>
 `;
 
 module.directive('grafanaPanel', ($rootScope, $document, $timeout) => {
