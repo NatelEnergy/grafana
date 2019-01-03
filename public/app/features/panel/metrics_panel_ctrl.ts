@@ -26,7 +26,6 @@ class MetricsPanelCtrl extends PanelCtrl {
   dataStream: any;
   dataSubscription: any;
   dataList: any;
-  nextRefId: string;
   refreshWhenVisible: boolean;
 
   constructor($scope, $injector) {

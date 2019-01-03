@@ -7,7 +7,6 @@ import ResizeSensor from 'css-element-queries/src/ResizeSensor.js';
 const module = angular.module('grafana.directives');
 
 const panelTemplate = `
-<<<<<<< HEAD
   <div ng-class="{'panel-editor-container': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
     <div ng-class="{'panel-editor-container__panel': ctrl.panel.isEditing, 'panel-height-helper': !ctrl.panel.isEditing}">
       <div class="panel-container">
