@@ -36,7 +36,7 @@ export interface PanelMenuItem {
 export interface Threshold {
   index: number;
   value: number;
-  color?: string;
+  color: string;
 }
 
 export enum BasicGaugeColor {

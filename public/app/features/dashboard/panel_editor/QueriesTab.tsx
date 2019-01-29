@@ -18,7 +18,7 @@ import config from 'app/core/config';
 // Types
 import { PanelModel } from '../panel_model';
 import { DashboardModel } from '../dashboard_model';
-import { DataQuery, DataSourceSelectItem } from 'app/types';
+import { DataQuery, DataSourceSelectItem } from '@grafana/ui/src/types';
 import { PluginHelp } from 'app/core/components/PluginHelp/PluginHelp';
 
 interface Props {
@@ -133,14 +133,13 @@ export class QueriesTab extends PureComponent<Props, State> {
     return (
       <>
         <DataSourcePicker datasources={this.datasources} onChange={this.onChangeDataSource} current={currentDS} />
-        <div className="m-l-2">
-          {!isAddingMixed && (
-            <button className="btn navbar-button navbar-button--primary" onClick={this.onAddQueryClick}>
-              Add Query
-            </button>
-          )}
-          {isAddingMixed && this.renderMixedPicker()}
-        </div>
+        <div className="flex-grow" />
+        {!isAddingMixed && (
+          <button className="btn navbar-button navbar-button--primary" onClick={this.onAddQueryClick}>
+            Add Query
+          </button>
+        )}
+        {isAddingMixed && this.renderMixedPicker()}
       </>
     );
   };
@@ -198,7 +197,7 @@ export class QueriesTab extends PureComponent<Props, State> {
           <div className="query-editor-rows">
             {panel.targets.map((query, index) => (
               <QueryEditorRow
-                datasourceName={query.datasource || panel.datasource}
+                dataSourceValue={query.datasource || panel.datasource}
                 key={query.refId}
                 panel={panel}
                 query={query}

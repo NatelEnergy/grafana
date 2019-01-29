@@ -10,7 +10,7 @@ import { Emitter } from 'app/core/utils/emitter';
 
 // Types
 import { PanelModel } from '../panel_model';
-import { DataQuery, DataSourceApi } from 'app/types/series';
+import { DataQuery, DataSourceApi } from '@grafana/ui';
 
 interface Props {
   panel: PanelModel;
@@ -18,11 +18,12 @@ interface Props {
   onAddQuery: (query?: DataQuery) => void;
   onRemoveQuery: (query: DataQuery) => void;
   onMoveQuery: (query: DataQuery, direction: number) => void;
-  datasourceName: string | null;
+  dataSourceValue: string | null;
   inMixedMode: boolean;
 }
 
 interface State {
+  loadedDataSourceValue: string | null | undefined;
   datasource: DataSourceApi | null;
   isCollapsed: boolean;
   angularScope: AngularQueryComponentScope | null;
@@ -36,6 +37,7 @@ export class QueryEditorRow extends PureComponent<Props, State> {
     datasource: null,
     isCollapsed: false,
     angularScope: null,
+    loadedDataSourceValue: undefined,
   };
 
   componentDidMount() {
@@ -51,7 +53,7 @@ export class QueryEditorRow extends PureComponent<Props, State> {
       target: query,
       panel: panel,
       refresh: () => panel.refresh(),
-      render: () => panel.render,
+      render: () => panel.render(),
       events: panel.events,
     };
   }
@@ -61,14 +63,14 @@ export class QueryEditorRow extends PureComponent<Props, State> {
     const dataSourceSrv = getDatasourceSrv();
     const datasource = await dataSourceSrv.get(query.datasource || panel.datasource);
 
-    this.setState({ datasource });
+    this.setState({ datasource, loadedDataSourceValue: this.props.dataSourceValue });
   }
 
   componentDidUpdate() {
-    const { datasource } = this.state;
+    const { loadedDataSourceValue } = this.state;
 
     // check if we need to load another datasource
-    if (datasource && datasource.name !== this.props.datasourceName) {
+    if (loadedDataSourceValue !== this.props.dataSourceValue) {
       if (this.angularQueryEditor) {
         this.angularQueryEditor.destroy();
         this.angularQueryEditor = null;
@@ -103,7 +105,17 @@ export class QueryEditorRow extends PureComponent<Props, State> {
     this.setState({ isCollapsed: !this.state.isCollapsed });
   };
 
+  onQueryChange = (query: DataQuery) => {
+    Object.assign(this.props.query, query);
+    this.onExecuteQuery();
+  };
+
+  onExecuteQuery = () => {
+    this.props.panel.refresh();
+  };
+
   renderPluginEditor() {
+    const { query } = this.props;
     const { datasource } = this.state;
 
     if (datasource.pluginExports.QueryCtrl) {
@@ -112,7 +124,14 @@ export class QueryEditorRow extends PureComponent<Props, State> {
 
     if (datasource.pluginExports.QueryEditor) {
       const QueryEditor = datasource.pluginExports.QueryEditor;
-      return <QueryEditor />;
+      return (
+        <QueryEditor
+          query={query}
+          datasource={datasource}
+          onQueryChange={this.onQueryChange}
+          onExecuteQuery={this.onExecuteQuery}
+        />
+      );
     }
 
     return <div>Data source plugin does not export any Query Editor component</div>;
@@ -147,6 +166,7 @@ export class QueryEditorRow extends PureComponent<Props, State> {
 
   onDisableQuery = () => {
     this.props.query.hide = !this.props.query.hide;
+    this.onExecuteQuery();
     this.forceUpdate();
   };
 
@@ -161,7 +181,7 @@ export class QueryEditorRow extends PureComponent<Props, State> {
   }
 
   render() {
-    const { query, datasourceName, inMixedMode } = this.props;
+    const { query, inMixedMode } = this.props;
     const { datasource, isCollapsed } = this.state;
     const isDisabled = query.hide;
 
@@ -185,10 +205,10 @@ export class QueryEditorRow extends PureComponent<Props, State> {
             {isCollapsed && <i className="fa fa-caret-right" />}
             {!isCollapsed && <i className="fa fa-caret-down" />}
             <span>{query.refId}</span>
-            {inMixedMode && <em className="query-editor-row__context-info"> ({datasourceName})</em>}
+            {inMixedMode && <em className="query-editor-row__context-info"> ({datasource.name})</em>}
             {isDisabled && <em className="query-editor-row__context-info"> Disabled</em>}
           </div>
-          <div className="query-editor-row__collapsed-text">
+          <div className="query-editor-row__collapsed-text" onClick={this.onToggleEditMode}>
             {isCollapsed && <div>{this.renderCollapsedText()}</div>}
           </div>
           <div className="query-editor-row__actions">

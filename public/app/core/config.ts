@@ -34,8 +34,10 @@ export class Settings {
   disableUserSignUp: boolean;
   loginHint: any;
   loginError: any;
+  viewersCanEdit: boolean;
+  disableSanitizeHtml: boolean;
 
-  constructor(options) {
+  constructor(options: Settings) {
     const defaults = {
       datasources: {},
       windowTitlePrefix: 'Grafana - ',
@@ -50,6 +52,8 @@ export class Settings {
         env: 'production',
         isEnterprise: false,
       },
+      viewersCanEdit: false,
+      disableSanitizeHtml: false
     };
 
     _.extend(this, defaults, options);

@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
-// import tinycolor, { ColorInput } from 'tinycolor2';
-
-import { Threshold } from '../../types';
+import { Threshold, Themeable } from '../../types';
 import { ColorPicker } from '../ColorPicker/ColorPicker';
 import { PanelOptionsGroup } from '../PanelOptionsGroup/PanelOptionsGroup';
 import { colors } from '../../utils';
+import { getColorFromHexRgbOrName } from '@grafana/ui';
 
-export interface Props {
+export interface Props extends Themeable {
   thresholds: Threshold[];
   onChange: (thresholds: Threshold[]) => void;
 }
@@ -19,9 +18,15 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const thresholds: Threshold[] =
-      props.thresholds.length > 0 ? props.thresholds : [{ index: 0, value: -Infinity, color: colors[0] }];
+    const addDefaultThreshold = this.props.thresholds.length === 0;
+    const thresholds: Threshold[] = addDefaultThreshold
+      ? [{ index: 0, value: -Infinity, color: colors[0] }]
+      : props.thresholds;
     this.state = { thresholds };
+
+    if (addDefaultThreshold) {
+      this.onChange();
+    }
   }
 
   onAddThreshold = (index: number) => {
@@ -62,7 +67,7 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
           },
         ]),
       },
-      () => this.updateGauge()
+      () => this.onChange()
     );
   };
 
@@ -85,7 +90,7 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
           thresholds: newThresholds.filter(t => t !== threshold),
         };
       },
-      () => this.updateGauge()
+      () => this.onChange()
     );
   };
 
@@ -99,7 +104,7 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
     const value = isNaN(parsedValue) ? null : parsedValue;
 
     const newThresholds = thresholds.map(t => {
-      if (t === threshold) {
+      if (t === threshold && t.index !== 0) {
         t = { ...t, value: value as number };
       }
 
@@ -124,11 +129,10 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
       {
         thresholds: newThresholds,
       },
-      () => this.updateGauge()
+      () => this.onChange()
     );
   };
 
-  onChangeBaseColor = (color: string) => this.props.onChange(this.state.thresholds);
   onBlur = () => {
     this.setState(prevState => {
       const sortThresholds = this.sortThresholds([...prevState.thresholds]);
@@ -139,10 +143,10 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
       return { thresholds: sortThresholds };
     });
 
-    this.updateGauge();
+    this.onChange();
   };
 
-  updateGauge = () => {
+  onChange = () => {
     this.props.onChange(this.state.thresholds);
   };
 
@@ -184,6 +188,7 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
 
   render() {
     const { thresholds } = this.state;
+    const { theme } = this.props;
 
     return (
       <PanelOptionsGroup title="Thresholds">
@@ -194,7 +199,10 @@ export class ThresholdsEditor extends PureComponent<Props, State> {
                 <div className="thresholds-row-add-button" onClick={() => this.onAddThreshold(threshold.index + 1)}>
                   <i className="fa fa-plus" />
                 </div>
-                <div className="thresholds-row-color-indicator" style={{ backgroundColor: threshold.color }} />
+                <div
+                  className="thresholds-row-color-indicator"
+                  style={{ backgroundColor: getColorFromHexRgbOrName(threshold.color, theme) }}
+                />
                 <div className="thresholds-row-input">{this.renderInput(threshold)}</div>
               </div>
             );

@@ -1,16 +1,14 @@
+// Libraries
 import React, { PureComponent } from 'react';
+import _ from 'lodash';
 import { hot } from 'react-hot-loader';
 import { connect } from 'react-redux';
-import { RawTimeRange } from '@grafana/ui';
-import _ from 'lodash';
 
-import { QueryTransaction, HistoryItem, QueryHint, ExploreItemState, ExploreId } from 'app/types/explore';
-import { Emitter } from 'app/core/utils/emitter';
-import { DataQuery, StoreState } from 'app/types';
-
-// import DefaultQueryField from './QueryField';
+// Components
 import QueryEditor from './QueryEditor';
 import QueryTransactionStatus from './QueryTransactionStatus';
+
+// Actions
 import {
   addQueryRow,
   changeQuery,
@@ -19,6 +17,12 @@ import {
   removeQueryRow,
   runQueries,
 } from './state/actions';
+
+// Types
+import { StoreState } from 'app/types';
+import { RawTimeRange, DataQuery, QueryHint } from '@grafana/ui';
+import { QueryTransaction, HistoryItem, ExploreItemState, ExploreId } from 'app/types/explore';
+import { Emitter } from 'app/core/utils/emitter';
 
 function getFirstHintFromTransactions(transactions: QueryTransaction[]): QueryHint {
   const transaction = transactions.find(qt => qt.hints && qt.hints.length > 0);
@@ -127,16 +131,22 @@ export class QueryRow extends PureComponent<QueryRowProps> {
             />
           )}
         </div>
-        <div className="query-row-tools">
-          <button className="btn navbar-button navbar-button--tight" onClick={this.onClickClearButton}>
-            <i className="fa fa-times" />
-          </button>
-          <button className="btn navbar-button navbar-button--tight" onClick={this.onClickAddButton}>
-            <i className="fa fa-plus" />
-          </button>
-          <button className="btn navbar-button navbar-button--tight" onClick={this.onClickRemoveButton}>
-            <i className="fa fa-minus" />
-          </button>
+        <div className="gf-form-inline">
+          <div className="gf-form">
+            <button className="gf-form-label gf-form-label--btn" onClick={this.onClickClearButton}>
+              <i className="fa fa-times" />
+            </button>
+          </div>
+          <div className="gf-form">
+            <button className="gf-form-label gf-form-label--btn" onClick={this.onClickAddButton}>
+              <i className="fa fa-plus" />
+            </button>
+          </div>
+          <div className="gf-form">
+            <button className="gf-form-label gf-form-label--btn" onClick={this.onClickRemoveButton}>
+              <i className="fa fa-minus" />
+            </button>
+          </div>
         </div>
       </div>
     );

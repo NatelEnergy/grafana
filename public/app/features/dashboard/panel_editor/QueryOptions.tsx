@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { isValidTimeSpan } from 'app/core/utils/rangeutil';
 
 // Components
-import { Switch } from 'app/core/components/Switch/Switch';
+import { Switch } from '@grafana/ui';
 import { Input } from 'app/core/components/Form';
 import { EventsWithValidation } from 'app/core/components/Form/Input';
 import { InputStatus } from 'app/core/components/Form/Input';
@@ -14,7 +14,8 @@ import { FormLabel } from '@grafana/ui';
 
 // Types
 import { PanelModel } from '../panel_model';
-import { ValidationEvents, DataSourceSelectItem } from 'app/types';
+import { DataSourceSelectItem } from '@grafana/ui/src/types';
+import { ValidationEvents } from 'app/types';
 
 const timeRangeValidationEvents: ValidationEvents = {
   [EventsWithValidation.onBlur]: [
