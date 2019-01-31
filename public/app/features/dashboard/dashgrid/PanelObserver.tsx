@@ -1,4 +1,4 @@
-import { PanelModel } from '../panel_model';
+import { PanelModel } from '../state';
 
 import 'intersection-observer';
 
