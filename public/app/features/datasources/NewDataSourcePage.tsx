@@ -2,14 +2,16 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { hot } from 'react-hot-loader';
 import Page from 'app/core/components/Page/Page';
-import { NavModel, Plugin, StoreState } from 'app/types';
+import { StoreState } from 'app/types';
 import { addDataSource, loadDataSourceTypes, setDataSourceTypeSearchQuery } from './state/actions';
 import { getNavModel } from 'app/core/selectors/navModel';
 import { getDataSourceTypes } from './state/selectors';
+import { FilterInput } from 'app/core/components/FilterInput/FilterInput';
+import { NavModel, DataSourcePluginMeta } from '@grafana/ui';
 
 export interface Props {
   navModel: NavModel;
-  dataSourceTypes: Plugin[];
+  dataSourceTypes: DataSourcePluginMeta[];
   isLoading: boolean;
   addDataSource: typeof addDataSource;
   loadDataSourceTypes: typeof loadDataSourceTypes;
@@ -22,12 +24,12 @@ class NewDataSourcePage extends PureComponent<Props> {
     this.props.loadDataSourceTypes();
   }
 
-  onDataSourceTypeClicked = (plugin: Plugin) => {
+  onDataSourceTypeClicked = (plugin: DataSourcePluginMeta) => {
     this.props.addDataSource(plugin);
   };
 
-  onSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.props.setDataSourceTypeSearchQuery(event.target.value);
+  onSearchQueryChange = (value: string) => {
+    this.props.setDataSourceTypeSearchQuery(value);
   };
 
   render() {
@@ -35,34 +37,29 @@ class NewDataSourcePage extends PureComponent<Props> {
     return (
       <Page navModel={navModel}>
         <Page.Contents isLoading={isLoading}>
-          <div className="page-container page-body">
-            <h2 className="add-data-source-header">Choose data source type</h2>
-            <div className="add-data-source-search">
-              <label className="gf-form--has-input-icon">
-                <input
-                  type="text"
-                  className="gf-form-input width-20"
-                  value={dataSourceTypeSearchQuery}
-                  onChange={this.onSearchQueryChange}
-                  placeholder="Filter by name or type"
-                />
-                <i className="gf-form-input-icon fa fa-search" />
-              </label>
-            </div>
-            <div className="add-data-source-grid">
-              {dataSourceTypes.map((plugin, index) => {
-                return (
-                  <div
-                    onClick={() => this.onDataSourceTypeClicked(plugin)}
-                    className="add-data-source-grid-item"
-                    key={`${plugin.id}-${index}`}
-                  >
-                    <img className="add-data-source-grid-item-logo" src={plugin.info.logos.small} />
-                    <span className="add-data-source-grid-item-text">{plugin.name}</span>
-                  </div>
-                );
-              })}
-            </div>
+          <h2 className="add-data-source-header">Choose data source type</h2>
+          <div className="add-data-source-search">
+            <FilterInput
+              labelClassName="gf-form--has-input-icon"
+              inputClassName="gf-form-input width-20"
+              value={dataSourceTypeSearchQuery}
+              onChange={this.onSearchQueryChange}
+              placeholder="Filter by name or type"
+            />
+          </div>
+          <div className="add-data-source-grid">
+            {dataSourceTypes.map((plugin, index) => {
+              return (
+                <div
+                  onClick={() => this.onDataSourceTypeClicked(plugin)}
+                  className="add-data-source-grid-item"
+                  key={`${plugin.id}-${index}`}
+                >
+                  <img className="add-data-source-grid-item-logo" src={plugin.info.logos.small} />
+                  <span className="add-data-source-grid-item-text">{plugin.name}</span>
+                </div>
+              );
+            })}
           </div>
         </Page.Contents>
       </Page>
@@ -74,7 +71,8 @@ function mapStateToProps(state: StoreState) {
   return {
     navModel: getNavModel(state.navIndex, 'datasources'),
     dataSourceTypes: getDataSourceTypes(state.dataSources),
-    isLoading: state.dataSources.isLoadingDataSources
+    dataSourceTypeSearchQuery: state.dataSources.dataSourceTypeSearchQuery,
+    isLoading: state.dataSources.isLoadingDataSources,
   };
 }
 
@@ -84,4 +82,9 @@ const mapDispatchToProps = {
   setDataSourceTypeSearchQuery,
 };
 
-export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(NewDataSourcePage));
+export default hot(module)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(NewDataSourcePage)
+);

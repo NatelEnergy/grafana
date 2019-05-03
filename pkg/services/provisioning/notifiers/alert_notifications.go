@@ -92,7 +92,7 @@ func (dc *NotificationProvisioner) mergeNotifications(notificationToMerge []*not
 		}
 
 		if cmd.Result == nil {
-			dc.log.Info("Inserting alert notification from configuration ", "name", notification.Name, "uid", notification.Uid)
+			dc.log.Debug("inserting alert notification from configuration", "name", notification.Name, "uid", notification.Uid)
 			insertCmd := &models.CreateAlertNotificationCommand{
 				Uid:                   notification.Uid,
 				Name:                  notification.Name,
@@ -109,7 +109,7 @@ func (dc *NotificationProvisioner) mergeNotifications(notificationToMerge []*not
 				return err
 			}
 		} else {
-			dc.log.Info("Updating alert notification from configuration", "name", notification.Name)
+			dc.log.Debug("updating alert notification from configuration", "name", notification.Name)
 			updateCmd := &models.UpdateAlertNotificationWithUidCommand{
 				Uid:                   notification.Uid,
 				Name:                  notification.Name,
@@ -129,39 +129,6 @@ func (dc *NotificationProvisioner) mergeNotifications(notificationToMerge []*not
 	}
 
 	return nil
-}
-
-func (cfg *notificationsAsConfig) mapToNotificationFromConfig() *notificationsAsConfig {
-	r := &notificationsAsConfig{}
-	if cfg == nil {
-		return r
-	}
-
-	for _, notification := range cfg.Notifications {
-		r.Notifications = append(r.Notifications, &notificationFromConfig{
-			Uid:                   notification.Uid,
-			OrgId:                 notification.OrgId,
-			OrgName:               notification.OrgName,
-			Name:                  notification.Name,
-			Type:                  notification.Type,
-			IsDefault:             notification.IsDefault,
-			Settings:              notification.Settings,
-			DisableResolveMessage: notification.DisableResolveMessage,
-			Frequency:             notification.Frequency,
-			SendReminder:          notification.SendReminder,
-		})
-	}
-
-	for _, notification := range cfg.DeleteNotifications {
-		r.DeleteNotifications = append(r.DeleteNotifications, &deleteNotificationConfig{
-			Uid:     notification.Uid,
-			OrgId:   notification.OrgId,
-			OrgName: notification.OrgName,
-			Name:    notification.Name,
-		})
-	}
-
-	return r
 }
 
 func (dc *NotificationProvisioner) applyChanges(configPath string) error {

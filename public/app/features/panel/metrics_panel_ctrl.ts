@@ -6,6 +6,8 @@ import { PanelCtrl } from 'app/features/panel/panel_ctrl';
 import { getExploreUrl } from 'app/core/utils/explore';
 import { applyPanelTimeOverrides, getResolution } from 'app/features/dashboard/utils/panel';
 import { ContextSrv } from 'app/core/services/context_srv';
+import { toLegacyResponseData, isSeriesData, LegacyResponseData, TimeRange } from '@grafana/ui';
+import { Unsubscribable } from 'rxjs';
 
 class MetricsPanelCtrl extends PanelCtrl {
   scope: any;
@@ -16,17 +18,15 @@ class MetricsPanelCtrl extends PanelCtrl {
   datasourceSrv: any;
   timeSrv: any;
   templateSrv: any;
-  timing: any;
-  range: any;
+  range: TimeRange;
   interval: any;
   intervalMs: any;
   resolution: any;
-  timeInfo: any;
+  timeInfo?: string;
   skipDataOnInit: boolean;
   dataStream: any;
-  dataSubscription: any;
-  dataList: any;
-  refreshWhenVisible: boolean;
+  dataSubscription?: Unsubscribable;
+  dataList: LegacyResponseData[];
 
   constructor($scope, $injector) {
     super($scope, $injector);
@@ -41,7 +41,6 @@ class MetricsPanelCtrl extends PanelCtrl {
 
     this.events.on('refresh', this.onMetricsPanelRefresh.bind(this));
     this.events.on('panel-teardown', this.onPanelTearDown.bind(this));
-    this.events.on('panel-visibility-changed', this.onPanelVisibilityChanged.bind(this));
   }
 
   private onPanelTearDown() {
@@ -51,23 +50,9 @@ class MetricsPanelCtrl extends PanelCtrl {
     }
   }
 
-  private onPanelVisibilityChanged(vis) {
-    if (this.refreshWhenVisible) {
-      console.log('Issue delayed refresh', this.panel.id, this.panel.title);
-      this.onMetricsPanelRefresh();
-      this.refreshWhenVisible = false;
-    }
-  }
-
   private onMetricsPanelRefresh() {
     // ignore fetching data if another panel is in fullscreen
     if (this.otherPanelInFullscreenMode()) {
-      return;
-    }
-
-    // Delay refresh until the panel is visible
-    if (this.panel.visible === false && !this.panel.fullscreen) {
-      this.refreshWhenVisible = true;
       return;
     }
 
@@ -97,9 +82,8 @@ class MetricsPanelCtrl extends PanelCtrl {
     this.loading = true;
 
     // load datasource service
-    this.setTimeQueryStart();
     this.datasourceSrv
-      .get(this.panel.datasource)
+      .get(this.panel.datasource, this.panel.scopedVars)
       .then(this.updateTimeRange.bind(this))
       .then(this.issueQueries.bind(this))
       .then(this.handleQueryResult.bind(this))
@@ -126,14 +110,6 @@ class MetricsPanelCtrl extends PanelCtrl {
         this.events.emit('data-error', err);
         console.log('Panel data error:', err);
       });
-  }
-
-  setTimeQueryStart() {
-    this.timing.queryStart = new Date().getTime();
-  }
-
-  setTimeQueryEnd() {
-    this.timing.queryEnd = new Date().getTime();
   }
 
   updateTimeRange(datasource?) {
@@ -197,7 +173,6 @@ class MetricsPanelCtrl extends PanelCtrl {
   }
 
   handleQueryResult(result) {
-    this.setTimeQueryEnd();
     this.loading = false;
 
     // check for if data source returns subject
@@ -215,7 +190,14 @@ class MetricsPanelCtrl extends PanelCtrl {
       result = { data: [] };
     }
 
-    this.events.emit('data-received', result.data);
+    // Make sure the data is TableData | TimeSeries
+    const data = result.data.map(v => {
+      if (isSeriesData(v)) {
+        return toLegacyResponseData(v);
+      }
+      return v;
+    });
+    this.events.emit('data-received', data);
   }
 
   handleDataStream(stream) {
@@ -251,7 +233,7 @@ class MetricsPanelCtrl extends PanelCtrl {
       items.push({
         text: 'Explore',
         click: 'ctrl.explore();',
-        icon: 'fa fa-fw fa-rocket',
+        icon: 'gicon gicon-explore',
         shortcut: 'x',
       });
     }

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 
 import { QueriesTab } from './QueriesTab';
-import { VisualizationTab } from './VisualizationTab';
+import VisualizationTab from './VisualizationTab';
 import { GeneralTab } from './GeneralTab';
 import { AlertTab } from '../../alerting/AlertTab';
 
@@ -13,16 +13,14 @@ import { AngularComponent } from 'app/core/services/AngularLoader';
 
 import { PanelModel } from '../state/PanelModel';
 import { DashboardModel } from '../state/DashboardModel';
-import { PanelPlugin } from 'app/types/plugins';
-
-import { Tooltip } from '@grafana/ui';
+import { Tooltip, PanelPlugin, PanelPluginMeta } from '@grafana/ui';
 
 interface PanelEditorProps {
   panel: PanelModel;
   dashboard: DashboardModel;
   plugin: PanelPlugin;
   angularPanel?: AngularComponent;
-  onTypeChanged: (newType: PanelPlugin) => void;
+  onTypeChanged: (newType: PanelPluginMeta) => void;
 }
 
 interface PanelEditorTab {
@@ -30,15 +28,41 @@ interface PanelEditorTab {
   text: string;
 }
 
+enum PanelEditorTabIds {
+  Queries = 'queries',
+  Visualization = 'visualization',
+  Advanced = 'advanced',
+  Alert = 'alert',
+}
+
+interface PanelEditorTab {
+  id: string;
+  text: string;
+}
+
+const panelEditorTabTexts = {
+  [PanelEditorTabIds.Queries]: 'Queries',
+  [PanelEditorTabIds.Visualization]: 'Visualization',
+  [PanelEditorTabIds.Advanced]: 'General',
+  [PanelEditorTabIds.Alert]: 'Alert',
+};
+
+const getPanelEditorTab = (tabId: PanelEditorTabIds): PanelEditorTab => {
+  return {
+    id: tabId,
+    text: panelEditorTabTexts[tabId],
+  };
+};
+
 export class PanelEditor extends PureComponent<PanelEditorProps> {
-  constructor(props) {
+  constructor(props: PanelEditorProps) {
     super(props);
   }
 
   onChangeTab = (tab: PanelEditorTab) => {
     store.dispatch(
       updateLocation({
-        query: { tab: tab.id },
+        query: { tab: tab.id, openVizPicker: null },
         partial: true,
       })
     );
@@ -72,46 +96,30 @@ export class PanelEditor extends PureComponent<PanelEditorProps> {
 
   render() {
     const { plugin } = this.props;
-    let activeTab = store.getState().location.query.tab || 'queries';
+    let activeTab: PanelEditorTabIds = store.getState().location.query.tab || PanelEditorTabIds.Queries;
 
     const tabs: PanelEditorTab[] = [
-      { id: 'queries', text: 'Queries' },
-      { id: 'visualization', text: 'Visualization' },
-      { id: 'advanced', text: 'Panel Options' },
+      getPanelEditorTab(PanelEditorTabIds.Queries),
+      getPanelEditorTab(PanelEditorTabIds.Visualization),
+      getPanelEditorTab(PanelEditorTabIds.Advanced),
     ];
 
     // handle panels that do not have queries tab
-    if (plugin.exports.PanelCtrl) {
-      if (!plugin.exports.PanelCtrl.prototype.onDataReceived) {
-        // remove queries tab
-        tabs.shift();
-        // switch tab
-        if (activeTab === 'queries') {
-          activeTab = 'visualization';
-        }
+    if (plugin.meta.dataFormats.length === 0) {
+      // remove queries tab
+      tabs.shift();
+      // switch tab
+      if (activeTab === PanelEditorTabIds.Queries) {
+        activeTab = PanelEditorTabIds.Visualization;
       }
     }
 
-    if (config.alertingEnabled && plugin.id === 'graph') {
-      tabs.push({
-        id: 'alert',
-        text: 'Alert',
-      });
+    if (config.alertingEnabled && plugin.meta.id === 'graph') {
+      tabs.push(getPanelEditorTab(PanelEditorTabIds.Alert));
     }
 
     return (
       <div className="panel-editor-container__editor">
-        {
-          // <div className="panel-editor__close">
-          //   <i className="fa fa-arrow-left" />
-          // </div>
-          // <div className="panel-editor-resizer">
-          //   <div className="panel-editor-resizer__handle">
-          //     <div className="panel-editor-resizer__handle-dots" />
-          //   </div>
-          // </div>
-        }
-
         <div className="panel-editor-tabs">
           {tabs.map(tab => {
             return <TabItem tab={tab} activeTab={activeTab} onClick={this.onChangeTab} key={tab.id} />;

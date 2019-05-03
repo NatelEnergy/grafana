@@ -5,8 +5,9 @@ import (
 	"testing"
 
 	"github.com/grafana/grafana/pkg/bus"
+	"github.com/grafana/grafana/pkg/infra/remotecache"
 	m "github.com/grafana/grafana/pkg/models"
-	"github.com/grafana/grafana/pkg/services/session"
+	"github.com/grafana/grafana/pkg/services/auth"
 	"github.com/grafana/grafana/pkg/setting"
 	. "github.com/smartystreets/goconvey/convey"
 	macaron "gopkg.in/macaron.v1"
@@ -17,7 +18,7 @@ func TestRecoveryMiddleware(t *testing.T) {
 
 	Convey("Given an api route that panics", t, func() {
 		apiURL := "/api/whatever"
-		recoveryScenario("recovery middleware should return json", apiURL, func(sc *scenarioContext) {
+		recoveryScenario(t, "recovery middleware should return json", apiURL, func(sc *scenarioContext) {
 			sc.handlerFunc = PanicHandler
 			sc.fakeReq("GET", apiURL).exec()
 			sc.req.Header.Add("content-type", "application/json")
@@ -30,7 +31,7 @@ func TestRecoveryMiddleware(t *testing.T) {
 
 	Convey("Given a non-api route that panics", t, func() {
 		apiURL := "/whatever"
-		recoveryScenario("recovery middleware should return html", apiURL, func(sc *scenarioContext) {
+		recoveryScenario(t, "recovery middleware should return html", apiURL, func(sc *scenarioContext) {
 			sc.handlerFunc = PanicHandler
 			sc.fakeReq("GET", apiURL).exec()
 
@@ -45,7 +46,7 @@ func PanicHandler(c *m.ReqContext) {
 	panic("Handler has panicked")
 }
 
-func recoveryScenario(desc string, url string, fn scenarioFunc) {
+func recoveryScenario(t *testing.T, desc string, url string, fn scenarioFunc) {
 	Convey(desc, func() {
 		defer bus.ClearBusHandlers()
 
@@ -63,10 +64,11 @@ func recoveryScenario(desc string, url string, fn scenarioFunc) {
 			Delims:    macaron.Delims{Left: "[[", Right: "]]"},
 		}))
 
-		sc.userAuthTokenService = newFakeUserAuthTokenService()
-		sc.m.Use(GetContextHandler(sc.userAuthTokenService))
+		sc.userAuthTokenService = auth.NewFakeUserAuthTokenService()
+		sc.remoteCacheService = remotecache.NewFakeStore(t)
+
+		sc.m.Use(GetContextHandler(sc.userAuthTokenService, sc.remoteCacheService))
 		// mock out gc goroutine
-		session.StartSessionGC = func() {}
 		sc.m.Use(OrgRedirect())
 		sc.m.Use(AddDefaultResponseHeaders())
 

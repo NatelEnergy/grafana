@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import MappingRow from './MappingRow';
-import { MappingType, ValueMapping } from '../../types/panel';
+import { MappingType, ValueMapping } from '../../types';
 import { PanelOptionsGroup } from '../PanelOptionsGroup/PanelOptionsGroup';
 
 export interface Props {
@@ -81,24 +81,16 @@ export class ValueMappingsEditor extends PureComponent<Props, State> {
     const { valueMappings } = this.state;
 
     return (
-      <PanelOptionsGroup title="Value Mappings">
-        <div>
-          {valueMappings.length > 0 &&
-            valueMappings.map((valueMapping, index) => (
-              <MappingRow
-                key={`${valueMapping.text}-${index}`}
-                valueMapping={valueMapping}
-                updateValueMapping={this.updateGauge}
-                removeValueMapping={() => this.onRemoveMapping(valueMapping.id)}
-              />
-            ))}
-        </div>
-        <div className="add-mapping-row" onClick={this.addMapping}>
-          <div className="add-mapping-row-icon">
-            <i className="fa fa-plus" />
-          </div>
-          <div className="add-mapping-row-label">Add mapping</div>
-        </div>
+      <PanelOptionsGroup title="Add value mapping" onAdd={this.addMapping}>
+        {valueMappings.length > 0 &&
+          valueMappings.map((valueMapping, index) => (
+            <MappingRow
+              key={`${valueMapping.text}-${index}`}
+              valueMapping={valueMapping}
+              updateValueMapping={this.updateGauge}
+              removeValueMapping={() => this.onRemoveMapping(valueMapping.id)}
+            />
+          ))}
       </PanelOptionsGroup>
     );
   }

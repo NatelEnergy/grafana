@@ -9,15 +9,24 @@ import { TagFilter } from './components/TagFilter/TagFilter';
 import { SideMenu } from './components/sidemenu/SideMenu';
 import { MetricSelect } from './components/Select/MetricSelect';
 import AppNotificationList from './components/AppNotifications/AppNotificationList';
-import { ColorPicker, SeriesColorPickerPopover } from '@grafana/ui';
+import { ColorPicker, SeriesColorPickerPopoverWithTheme, SecretFormField } from '@grafana/ui';
+import { FunctionEditor } from 'app/plugins/datasource/graphite/FunctionEditor';
+import { SearchField } from './components/search/SearchField';
 
 export function registerAngularDirectives() {
   react2AngularDirective('passwordStrength', PasswordStrength, ['password']);
   react2AngularDirective('sidemenu', SideMenu, []);
+  react2AngularDirective('functionEditor', FunctionEditor, ['func', 'onRemove', 'onMoveLeft', 'onMoveRight']);
   react2AngularDirective('appNotificationsList', AppNotificationList, []);
   react2AngularDirective('pageHeader', PageHeader, ['model', 'noTabs']);
   react2AngularDirective('emptyListCta', EmptyListCTA, ['model']);
   react2AngularDirective('searchResult', SearchResult, []);
+  react2AngularDirective('searchField', SearchField, [
+    'query',
+    'autoFocus',
+    ['onChange', { watchDepth: 'reference' }],
+    ['onKeyDown', { watchDepth: 'reference' }],
+  ]);
   react2AngularDirective('tagFilter', TagFilter, [
     'tags',
     ['onChange', { watchDepth: 'reference' }],
@@ -27,7 +36,7 @@ export function registerAngularDirectives() {
     'color',
     ['onChange', { watchDepth: 'reference', wrapApply: true }],
   ]);
-  react2AngularDirective('seriesColorPickerPopover', SeriesColorPickerPopover, [
+  react2AngularDirective('seriesColorPickerPopover', SeriesColorPickerPopoverWithTheme, [
     'color',
     'series',
     'onColorChange',
@@ -56,5 +65,13 @@ export function registerAngularDirectives() {
     'onExecuteQuery',
     ['datasource', { watchDepth: 'reference' }],
     ['templateSrv', { watchDepth: 'reference' }],
+  ]);
+  react2AngularDirective('secretFormField', SecretFormField, [
+    'value',
+    'isConfigured',
+    'inputWidth',
+    'labelWidth',
+    ['onReset', { watchDepth: 'reference', wrapApply: true }],
+    ['onChange', { watchDepth: 'reference', wrapApply: true }],
   ]);
 }

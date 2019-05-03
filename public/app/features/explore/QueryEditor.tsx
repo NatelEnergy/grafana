@@ -1,5 +1,6 @@
 // Libraries
 import React, { PureComponent } from 'react';
+import moment from 'moment';
 
 // Services
 import { getAngularLoader, AngularComponent } from 'app/core/services/AngularLoader';
@@ -7,17 +8,17 @@ import { getTimeSrv } from 'app/features/dashboard/services/TimeSrv';
 
 // Types
 import { Emitter } from 'app/core/utils/emitter';
-import { RawTimeRange, DataQuery } from '@grafana/ui';
+import { DataQuery, TimeRange } from '@grafana/ui';
 import 'app/features/plugins/plugin_loader';
 
 interface QueryEditorProps {
   datasource: any;
   error?: string | JSX.Element;
   onExecuteQuery?: () => void;
-  onQueryChange?: (value: DataQuery, override?: boolean) => void;
+  onQueryChange?: (value: DataQuery) => void;
   initialQuery: DataQuery;
   exploreEvents: Emitter;
-  range: RawTimeRange;
+  range: TimeRange;
 }
 
 export default class QueryEditor extends PureComponent<QueryEditorProps, any> {
@@ -40,20 +41,20 @@ export default class QueryEditor extends PureComponent<QueryEditorProps, any> {
         datasource,
         target,
         refresh: () => {
-          this.props.onQueryChange(target, false);
+          this.props.onQueryChange(target);
           this.props.onExecuteQuery();
         },
-        events: exploreEvents,
-        panel: {
-          datasource,
-          targets: [target],
+        onQueryChange: () => {
+          this.props.onQueryChange(target);
         },
+        events: exploreEvents,
+        panel: { datasource, targets: [target] },
         dashboard: {},
       },
     };
 
     this.component = loader.load(this.element, scopeProps, template);
-    this.props.onQueryChange(target, false);
+    this.props.onQueryChange(target);
   }
 
   componentWillUnmount() {
@@ -62,10 +63,13 @@ export default class QueryEditor extends PureComponent<QueryEditorProps, any> {
     }
   }
 
-  initTimeSrv(range) {
+  initTimeSrv(range: TimeRange) {
     const timeSrv = getTimeSrv();
     timeSrv.init({
-      time: range,
+      time: {
+        from: moment(range.from),
+        to: moment(range.to),
+      },
       refresh: false,
       getTimezone: () => 'utc',
       timeRangeUpdated: () => console.log('refreshDashboard!'),

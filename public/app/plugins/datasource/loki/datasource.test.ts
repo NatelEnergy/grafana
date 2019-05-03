@@ -1,10 +1,22 @@
 import LokiDatasource from './datasource';
 import { LokiQuery } from './types';
 import { getQueryOptions } from 'test/helpers/getQueryOptions';
+import { SeriesData } from '@grafana/ui';
 
 describe('LokiDatasource', () => {
   const instanceSettings: any = {
     url: 'myloggingurl',
+  };
+
+  const testResp = {
+    data: {
+      streams: [
+        {
+          entries: [{ ts: '2019-02-01T10:27:37.498180581Z', line: 'hello' }],
+          labels: '{}',
+        },
+      ],
+    },
   };
 
   describe('when querying', () => {
@@ -17,7 +29,7 @@ describe('LokiDatasource', () => {
 
     test('should use default max lines when no limit given', () => {
       const ds = new LokiDatasource(instanceSettings, backendSrvMock, templateSrvMock);
-      backendSrvMock.datasourceRequest = jest.fn();
+      backendSrvMock.datasourceRequest = jest.fn(() => Promise.resolve(testResp));
       const options = getQueryOptions<LokiQuery>({ targets: [{ expr: 'foo', refId: 'B' }] });
 
       ds.query(options);
@@ -30,13 +42,32 @@ describe('LokiDatasource', () => {
       const customData = { ...(instanceSettings.jsonData || {}), maxLines: 20 };
       const customSettings = { ...instanceSettings, jsonData: customData };
       const ds = new LokiDatasource(customSettings, backendSrvMock, templateSrvMock);
-      backendSrvMock.datasourceRequest = jest.fn();
+      backendSrvMock.datasourceRequest = jest.fn(() => Promise.resolve(testResp));
 
       const options = getQueryOptions<LokiQuery>({ targets: [{ expr: 'foo', refId: 'B' }] });
       ds.query(options);
 
       expect(backendSrvMock.datasourceRequest.mock.calls.length).toBe(1);
       expect(backendSrvMock.datasourceRequest.mock.calls[0][0].url).toContain('limit=20');
+    });
+
+    test('should return series data', async done => {
+      const customData = { ...(instanceSettings.jsonData || {}), maxLines: 20 };
+      const customSettings = { ...instanceSettings, jsonData: customData };
+      const ds = new LokiDatasource(customSettings, backendSrvMock, templateSrvMock);
+      backendSrvMock.datasourceRequest = jest.fn(() => Promise.resolve(testResp));
+
+      const options = getQueryOptions<LokiQuery>({
+        targets: [{ expr: 'foo', refId: 'B' }],
+      });
+
+      const res = await ds.query(options);
+
+      const seriesData = res.data[0] as SeriesData;
+      expect(seriesData.rows[0][1]).toBe('hello');
+      expect(seriesData.meta.limit).toBe(20);
+      expect(seriesData.meta.search).toBe('(?i)foo');
+      done();
     });
   });
 

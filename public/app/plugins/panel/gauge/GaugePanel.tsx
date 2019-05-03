@@ -2,44 +2,56 @@
 import React, { PureComponent } from 'react';
 
 // Services & Utils
-import { processTimeSeries } from '@grafana/ui';
+import { config } from 'app/core/config';
 
 // Components
 import { Gauge } from '@grafana/ui';
 
 // Types
 import { GaugeOptions } from './types';
-import { PanelProps, NullValueMode } from '@grafana/ui/src/types';
-import { ThemeProvider } from 'app/core/utils/ConfigProvider';
+import { DisplayValue, PanelProps, getSingleStatDisplayValues, VizRepeater } from '@grafana/ui';
 
-interface Props extends PanelProps<GaugeOptions> {}
-
-export class GaugePanel extends PureComponent<Props> {
-  render() {
-    const { timeSeries, width, height, onInterpolate, options } = this.props;
-
-    const prefix = onInterpolate(options.prefix);
-    const suffix = onInterpolate(options.suffix);
-
-    const vmSeries = processTimeSeries({
-      timeSeries: timeSeries,
-      nullValueMode: NullValueMode.Null,
-    });
+export class GaugePanel extends PureComponent<PanelProps<GaugeOptions>> {
+  renderValue = (value: DisplayValue, width: number, height: number): JSX.Element => {
+    const { options } = this.props;
 
     return (
-      <ThemeProvider>
-        {(theme) => (
-          <Gauge
-            timeSeries={vmSeries}
-            {...this.props.options}
-            width={width}
-            height={height}
-            prefix={prefix}
-            suffix={suffix}
-            theme={theme}
-          />
-        )}
-      </ThemeProvider>
+      <Gauge
+        value={value}
+        width={width}
+        height={height}
+        thresholds={options.thresholds}
+        showThresholdLabels={options.showThresholdLabels}
+        showThresholdMarkers={options.showThresholdMarkers}
+        minValue={options.minValue}
+        maxValue={options.maxValue}
+        theme={config.theme}
+      />
+    );
+  };
+
+  getValues = (): DisplayValue[] => {
+    const { data, options, replaceVariables } = this.props;
+    return getSingleStatDisplayValues({
+      ...options,
+      replaceVariables,
+      theme: config.theme,
+      data: data.series,
+    });
+  };
+
+  render() {
+    const { height, width, options, data, renderCounter } = this.props;
+    return (
+      <VizRepeater
+        getValues={this.getValues}
+        renderValue={this.renderValue}
+        width={width}
+        height={height}
+        source={data}
+        renderCounter={renderCounter}
+        orientation={options.orientation}
+      />
     );
   }
 }

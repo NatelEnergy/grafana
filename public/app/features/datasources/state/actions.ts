@@ -4,135 +4,40 @@ import { getBackendSrv } from 'app/core/services/backend_srv';
 import { getDatasourceSrv } from 'app/features/plugins/datasource_srv';
 import { LayoutMode } from 'app/core/components/LayoutSelector/LayoutSelector';
 import { updateLocation, updateNavIndex, UpdateNavIndexAction } from 'app/core/actions';
-import { UpdateLocationAction } from 'app/core/actions/location';
 import { buildNavModel } from './navModel';
-import { DataSourceSettings } from '@grafana/ui/src/types';
-import { Plugin, StoreState } from 'app/types';
+import { DataSourceSettings, DataSourcePluginMeta } from '@grafana/ui';
+import { StoreState, LocationUpdate } from 'app/types';
+import { actionCreatorFactory } from 'app/core/redux';
+import { ActionOf, noPayloadActionCreatorFactory } from 'app/core/redux/actionCreatorFactory';
+import { getPluginSettings } from 'app/features/plugins/PluginSettingsCache';
 
-export enum ActionTypes {
-  LoadDataSources = 'LOAD_DATA_SOURCES',
-  LoadDataSourceTypes = 'LOAD_DATA_SOURCE_TYPES',
-  LoadedDataSourceTypes = 'LOADED_DATA_SOURCE_TYPES',
-  LoadDataSource = 'LOAD_DATA_SOURCE',
-  LoadDataSourceMeta = 'LOAD_DATA_SOURCE_META',
-  SetDataSourcesSearchQuery = 'SET_DATA_SOURCES_SEARCH_QUERY',
-  SetDataSourcesLayoutMode = 'SET_DATA_SOURCES_LAYOUT_MODE',
-  SetDataSourceTypeSearchQuery = 'SET_DATA_SOURCE_TYPE_SEARCH_QUERY',
-  SetDataSourceName = 'SET_DATA_SOURCE_NAME',
-  SetIsDefault = 'SET_IS_DEFAULT',
-}
+export const dataSourceLoaded = actionCreatorFactory<DataSourceSettings>('LOAD_DATA_SOURCE').create();
 
-interface LoadDataSourcesAction {
-  type: ActionTypes.LoadDataSources;
-  payload: DataSourceSettings[];
-}
+export const dataSourcesLoaded = actionCreatorFactory<DataSourceSettings[]>('LOAD_DATA_SOURCES').create();
 
-interface SetDataSourcesSearchQueryAction {
-  type: ActionTypes.SetDataSourcesSearchQuery;
-  payload: string;
-}
+export const dataSourceMetaLoaded = actionCreatorFactory<DataSourcePluginMeta>('LOAD_DATA_SOURCE_META').create();
 
-interface SetDataSourcesLayoutModeAction {
-  type: ActionTypes.SetDataSourcesLayoutMode;
-  payload: LayoutMode;
-}
+export const dataSourceTypesLoad = noPayloadActionCreatorFactory('LOAD_DATA_SOURCE_TYPES').create();
 
-interface LoadDataSourceTypesAction {
-  type: ActionTypes.LoadDataSourceTypes;
-}
+export const dataSourceTypesLoaded = actionCreatorFactory<DataSourcePluginMeta[]>('LOADED_DATA_SOURCE_TYPES').create();
 
-interface LoadedDataSourceTypesAction {
-  type: ActionTypes.LoadedDataSourceTypes;
-  payload: Plugin[];
-}
+export const setDataSourcesSearchQuery = actionCreatorFactory<string>('SET_DATA_SOURCES_SEARCH_QUERY').create();
 
-interface SetDataSourceTypeSearchQueryAction {
-  type: ActionTypes.SetDataSourceTypeSearchQuery;
-  payload: string;
-}
+export const setDataSourcesLayoutMode = actionCreatorFactory<LayoutMode>('SET_DATA_SOURCES_LAYOUT_MODE').create();
 
-interface LoadDataSourceAction {
-  type: ActionTypes.LoadDataSource;
-  payload: DataSourceSettings;
-}
+export const setDataSourceTypeSearchQuery = actionCreatorFactory<string>('SET_DATA_SOURCE_TYPE_SEARCH_QUERY').create();
 
-interface LoadDataSourceMetaAction {
-  type: ActionTypes.LoadDataSourceMeta;
-  payload: Plugin;
-}
+export const setDataSourceName = actionCreatorFactory<string>('SET_DATA_SOURCE_NAME').create();
 
-interface SetDataSourceNameAction {
-  type: ActionTypes.SetDataSourceName;
-  payload: string;
-}
-
-interface SetIsDefaultAction {
-  type: ActionTypes.SetIsDefault;
-  payload: boolean;
-}
-
-const dataSourcesLoaded = (dataSources: DataSourceSettings[]): LoadDataSourcesAction => ({
-  type: ActionTypes.LoadDataSources,
-  payload: dataSources,
-});
-
-const dataSourceLoaded = (dataSource: DataSourceSettings): LoadDataSourceAction => ({
-  type: ActionTypes.LoadDataSource,
-  payload: dataSource,
-});
-
-const dataSourceMetaLoaded = (dataSourceMeta: Plugin): LoadDataSourceMetaAction => ({
-  type: ActionTypes.LoadDataSourceMeta,
-  payload: dataSourceMeta,
-});
-
-const dataSourceTypesLoad = (): LoadDataSourceTypesAction => ({
-  type: ActionTypes.LoadDataSourceTypes,
-});
-
-const dataSourceTypesLoaded = (dataSourceTypes: Plugin[]): LoadedDataSourceTypesAction => ({
-  type: ActionTypes.LoadedDataSourceTypes,
-  payload: dataSourceTypes,
-});
-
-export const setDataSourcesSearchQuery = (searchQuery: string): SetDataSourcesSearchQueryAction => ({
-  type: ActionTypes.SetDataSourcesSearchQuery,
-  payload: searchQuery,
-});
-
-export const setDataSourcesLayoutMode = (layoutMode: LayoutMode): SetDataSourcesLayoutModeAction => ({
-  type: ActionTypes.SetDataSourcesLayoutMode,
-  payload: layoutMode,
-});
-
-export const setDataSourceTypeSearchQuery = (query: string): SetDataSourceTypeSearchQueryAction => ({
-  type: ActionTypes.SetDataSourceTypeSearchQuery,
-  payload: query,
-});
-
-export const setDataSourceName = (name: string) => ({
-  type: ActionTypes.SetDataSourceName,
-  payload: name,
-});
-
-export const setIsDefault = (state: boolean) => ({
-  type: ActionTypes.SetIsDefault,
-  payload: state,
-});
+export const setIsDefault = actionCreatorFactory<boolean>('SET_IS_DEFAULT').create();
 
 export type Action =
-  | LoadDataSourcesAction
-  | SetDataSourcesSearchQueryAction
-  | SetDataSourcesLayoutModeAction
-  | UpdateLocationAction
-  | LoadDataSourceTypesAction
-  | LoadedDataSourceTypesAction
-  | SetDataSourceTypeSearchQueryAction
-  | LoadDataSourceAction
   | UpdateNavIndexAction
-  | LoadDataSourceMetaAction
-  | SetDataSourceNameAction
-  | SetIsDefaultAction;
+  | ActionOf<DataSourceSettings>
+  | ActionOf<DataSourceSettings[]>
+  | ActionOf<DataSourcePluginMeta>
+  | ActionOf<DataSourcePluginMeta[]>
+  | ActionOf<LocationUpdate>;
 
 type ThunkResult<R> = ThunkAction<R, StoreState, undefined, Action>;
 
@@ -146,14 +51,14 @@ export function loadDataSources(): ThunkResult<void> {
 export function loadDataSource(id: number): ThunkResult<void> {
   return async dispatch => {
     const dataSource = await getBackendSrv().get(`/api/datasources/${id}`);
-    const pluginInfo = await getBackendSrv().get(`/api/plugins/${dataSource.type}/settings`);
+    const pluginInfo = (await getPluginSettings(dataSource.type)) as DataSourcePluginMeta;
     dispatch(dataSourceLoaded(dataSource));
     dispatch(dataSourceMetaLoaded(pluginInfo));
     dispatch(updateNavIndex(buildNavModel(dataSource, pluginInfo)));
   };
 }
 
-export function addDataSource(plugin: Plugin): ThunkResult<void> {
+export function addDataSource(plugin: DataSourcePluginMeta): ThunkResult<void> {
   return async (dispatch, getStore) => {
     await dispatch(loadDataSources());
 
@@ -179,7 +84,7 @@ export function loadDataSourceTypes(): ThunkResult<void> {
   return async dispatch => {
     dispatch(dataSourceTypesLoad());
     const result = await getBackendSrv().get('/api/plugins', { enabled: 1, type: 'datasource' });
-    dispatch(dataSourceTypesLoaded(result));
+    dispatch(dataSourceTypesLoaded(result as DataSourcePluginMeta[]));
   };
 }
 
@@ -194,13 +99,17 @@ export function updateDataSource(dataSource: DataSourceSettings): ThunkResult<vo
 export function deleteDataSource(): ThunkResult<void> {
   return async (dispatch, getStore) => {
     const dataSource = getStore().dataSources.dataSource;
-
     await getBackendSrv().delete(`/api/datasources/${dataSource.id}`);
+    await updateFrontendSettings();
     dispatch(updateLocation({ path: '/datasources' }));
   };
 }
 
-export function nameExits(dataSources, name) {
+interface ItemWithName {
+  name: string;
+}
+
+export function nameExits(dataSources: ItemWithName[], name: string) {
   return (
     dataSources.filter(dataSource => {
       return dataSource.name.toLowerCase() === name.toLowerCase();
@@ -208,7 +117,7 @@ export function nameExits(dataSources, name) {
   );
 }
 
-export function findNewName(dataSources, name) {
+export function findNewName(dataSources: ItemWithName[], name: string) {
   // Need to loop through current data sources to make sure
   // the name doesn't exist
   while (nameExits(dataSources, name)) {
@@ -238,18 +147,18 @@ function updateFrontendSettings() {
     });
 }
 
-function nameHasSuffix(name) {
+function nameHasSuffix(name: string) {
   return name.endsWith('-', name.length - 1);
 }
 
-function getLastDigit(name) {
+function getLastDigit(name: string) {
   return parseInt(name.slice(-1), 10);
 }
 
-function incrementLastDigit(digit) {
+function incrementLastDigit(digit: number) {
   return isNaN(digit) ? 1 : digit + 1;
 }
 
-function getNewName(name) {
+function getNewName(name: string) {
   return name.slice(0, name.length - 1);
 }

@@ -1,8 +1,8 @@
 import angular from 'angular';
 import _ from 'lodash';
-import { PluginEditCtrl } from './plugin_edit_ctrl';
 
-const pluginInfoCache = {};
+import { getPluginSettings } from './PluginSettingsCache';
+import { PluginMeta } from '@grafana/ui';
 
 export class AppPageCtrl {
   page: any;
@@ -11,38 +11,35 @@ export class AppPageCtrl {
   navModel: any;
 
   /** @ngInject */
-  constructor(private backendSrv, private $routeParams: any, private $rootScope, private navModelSrv) {
+  constructor(private $routeParams: any, private $rootScope, private navModelSrv, private $q) {
     this.pluginId = $routeParams.pluginId;
 
-    if (pluginInfoCache[this.pluginId]) {
-      this.initPage(pluginInfoCache[this.pluginId]);
-    } else {
-      this.loadPluginInfo();
-    }
+    this.$q
+      .when(getPluginSettings(this.pluginId))
+      .then(settings => {
+        this.initPage(settings);
+      })
+      .catch(err => {
+        this.$rootScope.appEvent('alert-error', ['Unknown Plugin', '']);
+        this.navModel = this.navModelSrv.getNotFoundNav();
+      });
   }
 
-  initPage(app) {
+  initPage(app: PluginMeta) {
     this.appModel = app;
     this.page = _.find(app.includes, { slug: this.$routeParams.slug });
-    pluginInfoCache[this.pluginId] = app;
 
     if (!this.page) {
       this.$rootScope.appEvent('alert-error', ['App Page Not Found', '']);
-
+      this.navModel = this.navModelSrv.getNotFoundNav();
+      return;
+    }
+    if (app.type !== 'app' || !app.enabled) {
+      this.$rootScope.appEvent('alert-error', ['Applicaiton Not Enabled', '']);
       this.navModel = this.navModelSrv.getNotFoundNav();
       return;
     }
 
-    this.navModel = PluginEditCtrl.getPluginNavModel(app, this.$routeParams.slug);
-
-    // If anythign is active then the navigation was handled using tabs
-    for (let i = 0; i < this.navModel.main.children.length; i++) {
-      if (this.navModel.main.children[i].active) {
-        return;
-      }
-    }
-
-    // Don't show tabs
     const pluginNav = this.navModelSrv.getNav('plugin-page-' + app.id);
 
     this.navModel = {
@@ -54,12 +51,6 @@ export class AppPageCtrl {
         breadcrumbs: [{ title: app.name, url: pluginNav.main.url }],
       },
     };
-  }
-
-  loadPluginInfo() {
-    this.backendSrv.get(`/api/plugins/${this.pluginId}/settings`).then(app => {
-      this.initPage(app);
-    });
   }
 }
 

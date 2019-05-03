@@ -10,15 +10,16 @@ import { MetricsPanelCtrl } from 'app/plugins/sdk';
 import { DataProcessor } from './data_processor';
 import { axesEditorComponent } from './axes_editor';
 import config from 'app/core/config';
-import { GrafanaTheme, getColorFromHexRgbOrName } from '@grafana/ui';
+import TimeSeries from 'app/core/time_series2';
+import { getColorFromHexRgbOrName, LegacyResponseData } from '@grafana/ui';
 
 class GraphCtrl extends MetricsPanelCtrl {
   static template = template;
 
   renderError: boolean;
   hiddenSeries: any = {};
-  seriesList: any = [];
-  dataList: any = [];
+  seriesList: TimeSeries[] = [];
+  dataList: LegacyResponseData[] = [];
   annotations: any = [];
   alertState: any;
 
@@ -73,7 +74,7 @@ class GraphCtrl extends MetricsPanelCtrl {
     // length of a dash
     dashLength: 10,
     // length of space between two dashes
-    paceLength: 10,
+    spaceLength: 10,
     // show hide points
     points: false,
     // point radius in pixels
@@ -186,7 +187,7 @@ class GraphCtrl extends MetricsPanelCtrl {
     this.render([]);
   }
 
-  onDataReceived(dataList) {
+  onDataReceived(dataList: LegacyResponseData[]) {
     this.dataList = dataList;
     this.seriesList = this.processor.getSeriesList({
       dataList: dataList,
@@ -244,7 +245,7 @@ class GraphCtrl extends MetricsPanelCtrl {
   }
 
   onColorChange = (series, color) => {
-    series.setColor(getColorFromHexRgbOrName(color, config.bootData.user.lightTheme ? GrafanaTheme.Light : GrafanaTheme.Dark));
+    series.setColor(getColorFromHexRgbOrName(color, config.theme.type));
     this.panel.aliasColors[series.alias] = color;
     this.render();
   };
@@ -261,7 +262,7 @@ class GraphCtrl extends MetricsPanelCtrl {
   };
 
   onToggleAxis = info => {
-    let override = _.find(this.panel.seriesOverrides, { alias: info.alias });
+    let override: any = _.find(this.panel.seriesOverrides, { alias: info.alias });
     if (!override) {
       override = { alias: info.alias };
       this.panel.seriesOverrides.push(override);
@@ -281,7 +282,7 @@ class GraphCtrl extends MetricsPanelCtrl {
 
   toggleLegend() {
     this.panel.legend.show = !this.panel.legend.show;
-    this.refresh();
+    this.render();
   }
 
   legendValuesOptionChanged() {

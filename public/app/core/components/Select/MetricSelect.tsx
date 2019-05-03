@@ -1,13 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 
-import { Select } from '@grafana/ui';
-import { SelectOptionItem } from '@grafana/ui';
+import { Select, SelectOptionItem } from '@grafana/ui';
 import { Variable } from 'app/types/templates';
 
 export interface Props {
   onChange: (value: string) => void;
-  options: SelectOptionItem[];
+  options: Array<SelectOptionItem<string>>;
   isSearchable: boolean;
   value: string;
   placeholder?: string;
@@ -16,7 +15,7 @@ export interface Props {
 }
 
 interface State {
-  options: any[];
+  options: Array<SelectOptionItem<string>>;
 }
 
 export class MetricSelect extends React.Component<Props, State> {
