@@ -17,7 +17,7 @@ import reactDom from 'react-dom';
 import config from 'app/core/config';
 import TimeSeries from 'app/core/time_series2';
 import TableModel from 'app/core/table_model';
-import { coreModule, appEvents, contextSrv } from 'app/core/core';
+import { coreModule, appEvents, contextSrv, Emitter } from 'app/core/core';
 import { DataSourcePlugin, AppPlugin, PanelPlugin, PluginMeta, DataSourcePluginMeta } from '@grafana/ui/src/types';
 import * as datemath from '@grafana/ui/src/utils/datemath';
 import * as fileExport from 'app/core/utils/file_export';
@@ -121,6 +121,7 @@ exposeToPlugin('app/core/core', {
   coreModule: coreModule,
   appEvents: appEvents,
   contextSrv: contextSrv,
+  Emitter: Emitter,
   __esModule: true,
 });
 
