@@ -12,7 +12,7 @@ aliases:
       ignore: master
   - &filter-only-master
     branches:
-      only: master
+      only: masterXXX # never match... for Natel
 
 version: 2
 
