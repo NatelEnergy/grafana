@@ -276,7 +276,7 @@ jobs:
           command: '/tmp/bootstrap.sh'
       - run:
           name: package grafana
-          command: './scripts/build/build-all.sh --fast --package-only'
+          command: './scripts/build/build-all.sh'
       - run:
           name: sha-sum packages
           command: 'go run build.go sha-dist'
