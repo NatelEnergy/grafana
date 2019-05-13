@@ -18,12 +18,7 @@ exports[`Render should render component 1`] = `
   >
     <OrgActionBar
       layoutMode="grid"
-      linkButton={
-        Object {
-          "href": "https://grafana.com/plugins?utm_source=grafana_plugin_list",
-          "title": "Find more plugins on Grafana.com",
-        }
-      }
+      linkButton={null}
       onSetLayoutMode={[Function]}
       searchQuery=""
       setSearchQuery={[Function]}
@@ -50,12 +45,7 @@ exports[`Render should render list 1`] = `
   >
     <OrgActionBar
       layoutMode="grid"
-      linkButton={
-        Object {
-          "href": "https://grafana.com/plugins?utm_source=grafana_plugin_list",
-          "title": "Find more plugins on Grafana.com",
-        }
-      }
+      linkButton={null}
       onSetLayoutMode={[Function]}
       searchQuery=""
       setSearchQuery={[Function]}

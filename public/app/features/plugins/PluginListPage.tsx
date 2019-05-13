@@ -41,11 +41,6 @@ export class PluginListPage extends PureComponent<Props> {
       searchQuery,
     } = this.props;
 
-    const linkButton = {
-      href: 'https://grafana.com/plugins?utm_source=grafana_plugin_list',
-      title: 'Find more plugins on Grafana.com',
-    };
-
     return (
       <Page navModel={navModel}>
         <Page.Contents isLoading={!hasFetched}>
@@ -55,7 +50,7 @@ export class PluginListPage extends PureComponent<Props> {
               layoutMode={layoutMode}
               onSetLayoutMode={mode => setPluginsLayoutMode(mode)}
               setSearchQuery={query => setPluginsSearchQuery(query)}
-              linkButton={linkButton}
+              linkButton={null}
             />
             {hasFetched && plugins && (plugins && <PluginList plugins={plugins} layoutMode={layoutMode} />)}
           </>

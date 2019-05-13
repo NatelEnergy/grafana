@@ -14,7 +14,7 @@ export interface Props {
 export default class OrgActionBar extends PureComponent<Props> {
   render() {
     const { searchQuery, layoutMode, onSetLayoutMode, linkButton, setSearchQuery, target } = this.props;
-    const linkProps = { href: linkButton.href };
+    const linkProps = { href: linkButton ? linkButton.href : '#' };
 
     if (target) {
       (linkProps as any).target = target;
@@ -33,9 +33,11 @@ export default class OrgActionBar extends PureComponent<Props> {
           <LayoutSelector mode={layoutMode} onLayoutModeChanged={(mode: LayoutMode) => onSetLayoutMode(mode)} />
         </div>
         <div className="page-action-bar__spacer" />
-        <a className="btn btn-primary" {...linkProps}>
-          {linkButton.title}
-        </a>
+        {linkButton && (
+          <a className="btn btn-primary" {...linkProps}>
+            {linkButton.title}
+          </a>
+        )}
       </div>
     );
   }
