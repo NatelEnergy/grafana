@@ -16,18 +16,8 @@ export const Footer: FC<Props> = React.memo(
         <div className="text-center">
           <ul>
             <li>
-              <a href="http://docs.grafana.org" target="_blank">
-                <i className="fa fa-file-code-o" /> Docs
-              </a>
-            </li>
-            <li>
-              <a href="https://grafana.com/services/support" target="_blank">
-                <i className="fa fa-support" /> Support Plans
-              </a>
-            </li>
-            <li>
-              <a href="https://community.grafana.com/" target="_blank">
-                <i className="fa fa-comments-o" /> Community
+              <a href="https://upstream.tech/" target="_blank">
+                <i className="fa fa-file-code-o" /> Upstream Tech
               </a>
             </li>
             <li>

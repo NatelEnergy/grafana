@@ -41,7 +41,7 @@
   margin-right: auto;
   padding-left: $spacer * 2;
   padding-right: $spacer * 2;
-  max-width: 980px;
+  max-width: 100%;
   @include clearfix();
 }
 
