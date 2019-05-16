@@ -78,6 +78,7 @@ export interface DataSourcePluginMeta extends PluginMeta {
   logs?: boolean;
   explore?: boolean;
   annotations?: boolean;
+  alerting?: boolean;
   mixed?: boolean;
   hasQueryHelp?: boolean;
   category?: string;
@@ -117,14 +118,29 @@ export interface DataSourceConstructor<
 /**
  * The main data source abstraction interface, represents an instance of a data source
  */
-export interface DataSourceApi<
+export abstract class DataSourceApi<
   TQuery extends DataQuery = DataQuery,
   TOptions extends DataSourceJsonData = DataSourceJsonData
 > {
   /**
+   *  Set in constructor
+   */
+  readonly name: string;
+
+  /**
+   *  Set in constructor
+   */
+  readonly id: number;
+
+  /**
    *  min interval range
    */
   interval?: string;
+
+  constructor(instanceSettings: DataSourceInstanceSettings<TOptions>) {
+    this.name = instanceSettings.name;
+    this.id = instanceSettings.id;
+  }
 
   /**
    * Imports queries from a different datasource
@@ -139,12 +155,12 @@ export interface DataSourceApi<
   /**
    * Main metrics / data query action
    */
-  query(options: DataQueryRequest<TQuery>, observer?: DataStreamObserver): Promise<DataQueryResponse>;
+  abstract query(options: DataQueryRequest<TQuery>, observer?: DataStreamObserver): Promise<DataQueryResponse>;
 
   /**
    * Test & verify datasource settings & connection details
    */
-  testDatasource(): Promise<any>;
+  abstract testDatasource(): Promise<any>;
 
   /**
    *  Get hints for query improvements
@@ -157,16 +173,6 @@ export interface DataSourceApi<
   getQueryDisplayText?(query: TQuery): string;
 
   /**
-   *  Set after constructor is called by Grafana
-   */
-  name?: string;
-
-  /**
-   *  Set after constructor is called by Grafana
-   */
-  id?: number;
-
-  /**
    * Set after constructor call, as the data source instance is the most common thing to pass around
    * we attach the components to this instance for easy access
    */
@@ -176,14 +182,19 @@ export interface DataSourceApi<
    * static information about the datasource
    */
   meta?: DataSourcePluginMeta;
+
+  /**
+   * Used by alerting to check if query contains template variables
+   */
+  targetContainsTemplate?(query: TQuery): boolean;
 }
 
-export interface ExploreDataSourceApi<
+export abstract class ExploreDataSourceApi<
   TQuery extends DataQuery = DataQuery,
   TOptions extends DataSourceJsonData = DataSourceJsonData
 > extends DataSourceApi<TQuery, TOptions> {
   modifyQuery?(query: TQuery, action: QueryFixAction): TQuery;
-  getHighlighterExpression?(query: TQuery): string;
+  getHighlighterExpression?(query: TQuery): string[];
   languageProvider?: any;
 }
 
@@ -209,16 +220,10 @@ export interface ExploreQueryFieldProps<
   DSType extends DataSourceApi<TQuery, TOptions>,
   TQuery extends DataQuery = DataQuery,
   TOptions extends DataSourceJsonData = DataSourceJsonData
-> {
-  datasource: DSType;
+> extends QueryEditorProps<DSType, TQuery, TOptions> {
   datasourceStatus: DataSourceStatus;
-  query: TQuery;
-  error?: string | JSX.Element;
-  hint?: QueryHint;
   history: any[];
-  onExecuteQuery?: () => void;
-  onQueryChange?: (value: TQuery) => void;
-  onExecuteHint?: (action: QueryFixAction) => void;
+  onHint?: (action: QueryFixAction) => void;
 }
 
 export interface ExploreStartPageProps {
