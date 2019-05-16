@@ -105,7 +105,7 @@ module.directive('grafanaPanel', ($rootScope, $document, $timeout) => {
             panelInnerContent = $(scroller).find(':first');
             panelInnerContent.removeClass('panel-height-helper');
             panelInnerContent.css('margin-right', '20px');
-            panelInnerContent.css('border', '2px solid #F0F');
+            // panelInnerContent.css('border', '2px solid #F0F');
 
             // tslint:disable-next-line
             new ResizeSensor(panelInnerContent, checkInnerContentHeight);
