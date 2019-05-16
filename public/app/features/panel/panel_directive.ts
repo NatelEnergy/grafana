@@ -2,6 +2,7 @@ import angular from 'angular';
 import $ from 'jquery';
 import Drop from 'tether-drop';
 import baron from 'baron';
+import ResizeSensor from 'css-element-queries/src/ResizeSensor.js';
 
 const module = angular.module('grafana.directives');
 
@@ -40,6 +41,8 @@ module.directive('grafanaPanel', ($rootScope, $document, $timeout) => {
       const ctrl = scope.ctrl;
       let infoDrop;
       let panelScrollbar;
+      let panelInnerContent;
+      let panelInnerContentHeight = -1;
 
       // the reason for handling these classes this way is for performance
       // limit the watchers on panels etc
@@ -56,6 +59,16 @@ module.directive('grafanaPanel', ($rootScope, $document, $timeout) => {
       function mouseLeave() {
         panelContainer.toggleClass('panel-hover-highlight', false);
         ctrl.dashboard.setPanelFocus(0);
+      }
+
+      function checkInnerContentHeight() {
+        if (ctrl.panel.dynamicHeight && panelInnerContent) {
+          const v = panelInnerContent.outerHeight(true);
+          if (v !== panelInnerContentHeight) {
+            panelInnerContentHeight = v;
+            ctrl.dynamicHeightChanged(panelInnerContentHeight);
+          }
+        }
       }
 
       function resizeScrollableContent() {
@@ -82,7 +95,21 @@ module.directive('grafanaPanel', ($rootScope, $document, $timeout) => {
           `;
 
           const scrollRoot = panelContent;
-          const scroller = panelContent.find(':first').find(':first');
+          let scroller = panelContent.find(':first').find(':first');
+
+          // Add a div under the scroller and watch for changes
+          if (ctrl.panel.dynamicHeight) {
+            $(scroller).wrap('<div class="panel-height-helper"></div>');
+            scroller = panelContent.find(':first');
+
+            panelInnerContent = $(scroller).find(':first');
+            panelInnerContent.removeClass('panel-height-helper');
+            panelInnerContent.css('margin-right', '20px');
+            panelInnerContent.css('border', '2px solid #F0F');
+
+            // tslint:disable-next-line
+            new ResizeSensor(panelInnerContent, checkInnerContentHeight);
+          }
 
           scrollRoot.addClass(scrollRootClass);
           $(scrollBarHTML).appendTo(scrollRoot);

@@ -14,7 +14,7 @@ import {
   calculateInnerPanelHeight,
 } from 'app/features/dashboard/utils/panel';
 
-import { GRID_COLUMN_COUNT } from 'app/core/constants';
+import { GRID_COLUMN_COUNT, GRID_CELL_HEIGHT, GRID_CELL_VMARGIN } from 'app/core/constants';
 
 export class PanelCtrl {
   panel: any;
@@ -61,6 +61,25 @@ export class PanelCtrl {
 
   renderingCompleted() {
     profiler.renderingCompleted();
+  }
+
+  dynamicHeightChanged(height: number): boolean {
+    const min = this.panel.dynamicHeightMIN || 50;
+    if (height < min) {
+      height = min;
+    }
+    if (this.panel.dynamicHeightMAX && height > this.panel.dynamicHeightMAX) {
+      height = this.panel.dynamicHeightMAX;
+    }
+    const h = Math.ceil((height + 5) / (GRID_CELL_HEIGHT + GRID_CELL_VMARGIN)) + 1;
+    if (h !== this.panel.gridPos.h) {
+      //console.log('Dynamic Height Changed', height, 'new:', h, 'old', this.panel.gridPos.h);
+      this.panel.gridPos.h = h;
+      this.events.emit('panel-size-changed');
+      this.dashboard.events.emit('row-expanded'); // triggers grid re-layout
+      return true;
+    }
+    return false;
   }
 
   refresh() {
