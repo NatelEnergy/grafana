@@ -1,5 +1,4 @@
 ﻿import React, { FC } from 'react';
-import { Tooltip } from '@grafana/ui';
 
 interface Props {
   appName: string;
@@ -21,8 +20,7 @@ export const Footer: FC<Props> = React.memo(
               </a>
             </li>
             <li>
-              <a href="https://grafana.com" target="_blank"
-                title={`(commit: ${buildCommit})`}>
+              <a href="https://grafana.com" target="_blank" title={`(commit: ${buildCommit})`}>
                 v{buildVersion}
               </a>
             </li>
