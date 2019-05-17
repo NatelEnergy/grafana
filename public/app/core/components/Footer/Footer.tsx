@@ -17,26 +17,15 @@ export const Footer: FC<Props> = React.memo(
           <ul>
             <li>
               <a href="https://upstream.tech/" target="_blank">
-                <i className="fa fa-file-code-o" /> Upstream Tech
+                Upstream Tech
               </a>
             </li>
             <li>
-              <a href="https://grafana.com" target="_blank">
-                {appName}
-              </a>{' '}
-              <span>
-                v{buildVersion} (commit: {buildCommit})
-              </span>
+              <a href="https://grafana.com" target="_blank"
+                title={`(commit: ${buildCommit})`}>
+                v{buildVersion}
+              </a>
             </li>
-            {newGrafanaVersionExists && (
-              <li>
-                <Tooltip placement="auto" content={newGrafanaVersion}>
-                  <a href="https://grafana.com/get" target="_blank">
-                    New version available!
-                  </a>
-                </Tooltip>
-              </li>
-            )}
           </ul>
         </div>
       </footer>
