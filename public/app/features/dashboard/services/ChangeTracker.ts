@@ -125,12 +125,13 @@ export class ChangeTracker {
         delete panel.legend.sortDesc;
       }
 
-      // ignore all h parameters after a dynamic height
+      // ignore all y parameters after a dynamic height
       if (panel.dynamicHeight) {
         hasDynamicHeight = true;
+        delete panel.gridPos.h;
       }
       if (hasDynamicHeight) {
-        delete panel.gridPos.h;
+        delete panel.gridPos.y;
       }
 
       return true;
